@@ -2,13 +2,12 @@ package com.example.stairtree
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import com.example.stairtree.databinding.ActivityMainBinding
+import com.example.stairtree.databinding.ActivityMapBinding
 
-class MainActivity : AppCompatActivity() {
-    private val binding by lazy { ActivityMainBinding.inflate(layoutInflater) }
+class MapActivity : AppCompatActivity() {
+    private val binding by lazy { ActivityMapBinding.inflate(layoutInflater) }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
-        binding.textView.text = "change"
     }
 }
