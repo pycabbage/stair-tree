@@ -16,12 +16,6 @@
             android:name=".StairActivity"
             android:exported="false" />
         <activity
-            android:name=".Stair"
-            android:exported="false" />
-        <activity
-            android:name=".WorldStatusActivity"
-            android:exported="false" />
-        <activity
             android:name=".MapActivity"
             android:exported="false" />
         <activity
