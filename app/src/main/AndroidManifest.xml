@@ -11,15 +11,25 @@
         android:theme="@style/Theme.StairTree">
         <activity
             android:name=".StatusActivity"
+            android:screenOrientation="portrait"
             android:exported="false" />
         <activity
             android:name=".StairActivity"
+            android:screenOrientation="portrait"
             android:exported="false" />
         <activity
             android:name=".MapActivity"
-            android:exported="false" />
+            android:screenOrientation="portrait"
+            android:exported="true" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAP" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".MainActivity"
+            android:screenOrientation="portrait"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -27,6 +37,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="${MAPS_API_KEY}" />
+
     </application>
 
 </manifest>
