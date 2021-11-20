@@ -39,7 +39,11 @@ jobs:
 
     # 依存関係の出力
     - name: Displays the Android dependencies of the project
-      run: ./gradlew androidDependencies
+      run: |
+        if [ ! -e local.properties ]; then
+          echo sdk.dir=$ANDROID_HOME > local.properties
+        fi
+        ./gradlew androidDependencies
 
     # ビルド
     - name: Build with Gradle
