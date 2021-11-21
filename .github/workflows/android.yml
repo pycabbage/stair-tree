@@ -39,9 +39,12 @@ jobs:
 
     # 依存関係の出力
     - name: Displays the Android dependencies of the project
+      env: 
+        ADDITIONAL_LOCAL_PROPERTIES: ${{ secrets.ADDITIONAL_LOCAL_PROPERTIES }}
       run: |
         if [ ! -e local.properties ]; then
           echo sdk.dir=$ANDROID_HOME > local.properties
+          echo $ADDITIONAL_LOCAL_PROPERTIES >> local.properties
         fi
         ./gradlew androidDependencies
 
@@ -61,10 +64,11 @@ jobs:
         KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
         KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
         KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+        BASE: app/build/outputs/apk/release
       run: |
         echo $KEYSTORE_BASE64 | base64 -d > release.jks
-        zipalign -v -p 4 app/build/outputs/apk/release/app-release-unsigned.apk app/build/outputs/apk/release/app-release-unsigned-aligned.apk
-        apksigner sign --ks release.jks --ks-pass pass:$KEY_PASSWORD --out app/build/outputs/apk/release/app-release-unsigned-signed.apk app/build/outputs/apk/release/app-release-unsigned-aligned.apk
+        $ANDROID_HOME/build-tools/$BUILD_TOOLS_VERSION/zipalign -v -p 4 $BASE/app-release-unsigned.apk $BASE/app-release-unsigned-aligned.apk
+        $ANDROID_HOME/build-tools/$BUILD_TOOLS_VERSION/apksigner sign --ks release.jks --ks-pass env:KEY_PASSWORD --out $BASE/app-release-unsigned-signed.apk $BASE/app-release-unsigned-aligned.apk
     - name: Upload Debug APK
       uses: actions/upload-artifact@v2.2.4
       with:
