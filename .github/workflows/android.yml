@@ -1,0 +1,141 @@
+name: Android CI
+
+on:
+  push:
+    branches:
+      - master
+      - develop
+    paths-ignore:
+      - docs/**
+      - README.md
+      - LICENSE
+  pull_request:
+    branches:
+      - master
+      - develop
+    paths-ignore:
+      - docs/**
+      - README.md
+      - LICENSE
+  workflow_dispatch:
+    branches:
+      - master
+      - develop
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: set up JDK 11
+      uses: actions/setup-java@v2
+      with:
+        java-version: '11'
+        distribution: 'adopt'
+        cache: gradle
+
+    - name: Grant execute permission for gradlew
+      run: chmod +x gradlew
+
+    # 依存関係の出力
+    - name: Displays the Android dependencies of the project
+      env: 
+        ADDITIONAL_LOCAL_PROPERTIES: ${{ secrets.ADDITIONAL_LOCAL_PROPERTIES }}
+      run: |
+        if [ ! -e local.properties ]; then
+          echo sdk.dir=$ANDROID_HOME > local.properties
+          echo $ADDITIONAL_LOCAL_PROPERTIES >> local.properties
+        fi
+        ./gradlew androidDependencies
+
+    # ビルド
+    - name: Build with Gradle
+      run: ./gradlew build
+
+    # APKをコンパイル
+    - name: Compile Debug APK
+      run: ./gradlew assembleDebug
+    - name: Compile Release APK
+      run: ./gradlew assembleRelease
+    # AABをコンパイル
+    - name: Compile Debug APK
+      run: ./gradlew bundleDebug
+    - name: Compile Release APK
+      run: ./gradlew bundleRelease
+
+    # リリースAPKに署名
+    - name: Sign Release APK
+      env:
+        KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+        KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+        KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+        BASE: app/build/outputs/apk/release
+      run: |
+        echo $KEYSTORE_BASE64 | base64 -d > release.jks
+        ls $ANDROID_HOME/build-tools/
+        $ANDROID_HOME/build-tools/31.0.0/zipalign -v -p 4 $BASE/app-release-unsigned.apk $BASE/app-release-unsigned-aligned.apk
+        $ANDROID_HOME/build-tools/31.0.0/apksigner sign --ks release.jks --ks-pass env:KEY_PASSWORD --out $BASE/app-release-unsigned-signed.apk $BASE/app-release-unsigned-aligned.apk
+
+    # bundletoolを用意
+    - name: Prepare bundletool
+      run: |
+        curl -kLo ./bundletool.jar https://github.com/google/bundletool/releases/download/1.8.2/bundletool-all-1.8.2.jar
+        echo '#!/bin/sh' > ./bundletool.sh
+        echo 'java -jar ./bundletool.jar $*' > ./bundletool.sh
+        chmod +x ./bundletool.sh
+
+    # デバッグAPKSを作成
+    - name: Create Debug APKS
+      env:
+        BASE: app/build/outputs/bundle/debug
+      run: |
+        ./bundletool.sh build-apks --bundle=app/build/outputs/bundle/debug/app-debug.aab --output=app/build/outputs/bundle/debug/app-debug.apks
+
+    # リリースAPKSを作成
+    - name: Create Release APKS
+      env:
+        KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+        KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+        BASE: app/build/outputs/bundle/release
+      run: |
+        ./bundletool.sh build-apks --bundle=$BASE/app-release.aab --output=$BASE/app-release.apks --ks=release.jks --ks-pass=pass:$KEY_PASSWORD --ks-key-alias=$KEY_ALIAS --key-pass=pass:$KEY_PASSWORD
+
+    # artifactをアップロード
+    - name: Upload Debug APK
+      uses: actions/upload-artifact@v2.2.4
+      with:
+        name: debug-apk
+        path: |
+          app/build/outputs/apk/debug/app-debug.apk
+    - name: Upload Release APK
+      uses: actions/upload-artifact@v2.2.4
+      with:
+        name: release-apk-signed
+        path: |
+          app/build/outputs/apk/release/app-release-unsigned-signed.apk
+
+    - name: Upload Debug AAB
+      uses: actions/upload-artifact@v2.2.4
+      with:
+        name: debug-aab
+        path: |
+          app/build/outputs/bundle/debug/app-debug.aab
+    - name: Upload Release AAB
+      uses: actions/upload-artifact@v2.2.4
+      with:
+        name: release-aab
+        path: |
+          app/build/outputs/bundle/release/app-release.aab
+
+    - name: Upload Debug APKS
+      uses: actions/upload-artifact@v2.2.4
+      with:
+        name: debug-apks
+        path: |
+          app/build/outputs/bundle/debug/app-debug.apks
+    - name: Upload Release APKS
+      uses: actions/upload-artifact@v2.2.4
+      with:
+        name: release-apks-signed
+        path: |
+          app/build/outputs/bundle/release/app-release.apks
