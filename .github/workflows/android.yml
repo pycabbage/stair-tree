@@ -93,8 +93,12 @@ jobs:
 
     # リリースAPKSを作成
     - name: Create Release APKS
+      env:
+        KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+        KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+        BASE: app/build/outputs/bundle/release
       run: |
-        ./bundletool.sh build-apks --bundle=app/build/outputs/bundle/release/app-release.aab --output=app/build/outputs/bundle/release/app-release.aab --ks=release.jks --ks-pass=env:KEY_PASSWORD --ks-key-alias=$KEY_ALIAS --key-pass=env:KEY_PASSWORD
+        ./bundletool.sh build-apks --bundle=$BASE/app-release.aab --output=$BASE/app-release.aab --ks=release.jks --ks-pass=pass:$KEY_PASSWORD --ks-key-alias=$KEY_ALIAS --key-pass=pass:$KEY_PASSWORD
 
     # artifactをアップロード
     - name: Upload Debug APK
