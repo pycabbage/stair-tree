@@ -39,9 +39,12 @@ jobs:
 
     # 依存関係の出力
     - name: Displays the Android dependencies of the project
+      env: 
+        ADDITIONAL_LOCAL_PROPERTIES: ${{ secrets.ADDITIONAL_LOCAL_PROPERTIES }}
       run: |
         if [ ! -e local.properties ]; then
           echo sdk.dir=$ANDROID_HOME > local.properties
+          echo $ADDITIONAL_LOCAL_PROPERTIES >> local.properties
         fi
         ./gradlew androidDependencies
 
