@@ -10,6 +10,7 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.maps.android.data.geojson.GeoJsonLayer
+import com.google.maps.android.data.geojson.GeoJsonPolygonStyle
 
 class MapActivity : AppCompatActivity(), OnMapReadyCallback {
     private val binding by lazy { ActivityMapBinding.inflate(layoutInflater) }
@@ -29,10 +30,18 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
                 .position(LatLng(0.0, 0.0))
                 .title("Marker")
         )
-        val layer = GeoJsonLayer(googleMap, R.raw.sample, this)
+        val country = getCountryGeoJson("usa")
+        fillCountry(googleMap, country)
+    }
+
+    fun getCountryGeoJson(country: String): Int {
+        return resources.getIdentifier(country, "raw", packageName)
+
+    }
+
+    fun fillCountry(map: GoogleMap, country: Int) {
+        val layer = GeoJsonLayer(map, country, this)
         layer.addLayerToMap()
-        val PolygonStyle = layer.defaultPolygonStyle
-        PolygonStyle.fillColor = Color.argb(255, 255, 0, 0);
     }
 }
 
