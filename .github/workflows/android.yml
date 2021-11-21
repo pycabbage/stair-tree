@@ -67,8 +67,9 @@ jobs:
         BASE: app/build/outputs/apk/release
       run: |
         echo $KEYSTORE_BASE64 | base64 -d > release.jks
-        $ANDROID_HOME/build-tools/$BUILD_TOOLS_VERSION/zipalign -v -p 4 $BASE/app-release-unsigned.apk $BASE/app-release-unsigned-aligned.apk
-        $ANDROID_HOME/build-tools/$BUILD_TOOLS_VERSION/apksigner sign --ks release.jks --ks-pass env:KEY_PASSWORD --out $BASE/app-release-unsigned-signed.apk $BASE/app-release-unsigned-aligned.apk
+        ls $ANDROID_HOME/build-tools/
+        $ANDROID_HOME/build-tools/30.0.2/zipalign -v -p 4 $BASE/app-release-unsigned.apk $BASE/app-release-unsigned-aligned.apk
+        $ANDROID_HOME/build-tools/30.0.2/apksigner sign --ks release.jks --ks-pass env:KEY_PASSWORD --out $BASE/app-release-unsigned-signed.apk $BASE/app-release-unsigned-aligned.apk
     - name: Upload Debug APK
       uses: actions/upload-artifact@v2.2.4
       with:
