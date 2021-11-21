@@ -57,6 +57,11 @@ jobs:
       run: ./gradlew assembleDebug
     - name: Compile Release APK
       run: ./gradlew assembleRelease
+    # AABをコンパイル
+    - name: Compile Debug APK
+      run: ./gradlew bundleDebug
+    - name: Compile Release APK
+      run: ./gradlew bundleRelease
 
     # リリースAPKに署名
     - name: Sign Release APK
@@ -68,8 +73,22 @@ jobs:
       run: |
         echo $KEYSTORE_BASE64 | base64 -d > release.jks
         ls $ANDROID_HOME/build-tools/
-        $ANDROID_HOME/build-tools/30.0.2/zipalign -v -p 4 $BASE/app-release-unsigned.apk $BASE/app-release-unsigned-aligned.apk
-        $ANDROID_HOME/build-tools/30.0.2/apksigner sign --ks release.jks --ks-pass env:KEY_PASSWORD --out $BASE/app-release-unsigned-signed.apk $BASE/app-release-unsigned-aligned.apk
+        $ANDROID_HOME/build-tools/31.0.0/zipalign -v -p 4 $BASE/app-release-unsigned.apk $BASE/app-release-unsigned-aligned.apk
+        $ANDROID_HOME/build-tools/31.0.0/apksigner sign --ks release.jks --ks-pass env:KEY_PASSWORD --out $BASE/app-release-unsigned-signed.apk $BASE/app-release-unsigned-aligned.apk
+
+    # デバッグAPKSを作成
+    - name: Create Debug APKS
+      env:
+        BASE: app/build/outputs/bundle/debug
+      run: |
+        echo bundletool : $(which bundletool)
+        bundletool build-apks --bundle=app/build/outputs/bundle/debug/app-debug.aab --output=app/build/outputs/bundle/debug/app-debug.apks
+
+    # リリースAPKSを作成
+    - name: Create Release APKS
+      run: |
+        bundletool build-apks --bundle=app/build/outputs/bundle/release/app-release.aab --output=app/build/outputs/bundle/release/app-release.aab --ks=release.jks --ks-pass=env:KEY_PASSWORD --ks-key-alias=$KEY_ALIAS --key-pass=env:KEY_PASSWORD
+
     - name: Upload Debug APK
       uses: actions/upload-artifact@v2.2.4
       with:
@@ -82,3 +101,27 @@ jobs:
         name: signed-release-apk
         path: |
           app/build/outputs/apk/release/app-release-unsigned-signed.apk
+    - name: Upload Debug AAB
+      uses: actions/upload-artifact@v2.2.4
+      with:
+        name: debug-apks
+        path: |
+          app/build/outputs/bundle/debug/app-debug.aab
+    - name: Upload Release AAB
+      uses: actions/upload-artifact@v2.2.4
+      with:
+        name: release-apks
+        path: |
+          app/build/outputs/bundle/release/app-release.aab
+    - name: Upload Debug APKS
+      uses: actions/upload-artifact@v2.2.4
+      with:
+        name: debug-apks
+        path: |
+          app/build/outputs/bundle/debug/app-debug.apks
+    - name: Upload Release APKS
+      uses: actions/upload-artifact@v2.2.4
+      with:
+        name: signed-release-apks
+        path: |
+          app/build/outputs/bundle/release/app-release.apks
