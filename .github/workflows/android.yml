@@ -76,19 +76,27 @@ jobs:
         $ANDROID_HOME/build-tools/31.0.0/zipalign -v -p 4 $BASE/app-release-unsigned.apk $BASE/app-release-unsigned-aligned.apk
         $ANDROID_HOME/build-tools/31.0.0/apksigner sign --ks release.jks --ks-pass env:KEY_PASSWORD --out $BASE/app-release-unsigned-signed.apk $BASE/app-release-unsigned-aligned.apk
 
+    # bundletoolを用意
+    - name: Prepare bundletool
+      run: |
+        curl -kLo ./bundletool.jar https://github.com/google/bundletool/releases/download/1.8.2/bundletool-all-1.8.2.jar
+        echo '#!/bin/sh' > ./bundletool.sh
+        echo 'java -jar ./bundletool.jar $*' > ./bundletool.sh
+        chmod +x ./bundletool.sh
+
     # デバッグAPKSを作成
     - name: Create Debug APKS
       env:
         BASE: app/build/outputs/bundle/debug
       run: |
-        echo bundletool : $(which bundletool)
-        bundletool build-apks --bundle=app/build/outputs/bundle/debug/app-debug.aab --output=app/build/outputs/bundle/debug/app-debug.apks
+        ./bundletool.sh build-apks --bundle=app/build/outputs/bundle/debug/app-debug.aab --output=app/build/outputs/bundle/debug/app-debug.apks
 
     # リリースAPKSを作成
     - name: Create Release APKS
       run: |
-        bundletool build-apks --bundle=app/build/outputs/bundle/release/app-release.aab --output=app/build/outputs/bundle/release/app-release.aab --ks=release.jks --ks-pass=env:KEY_PASSWORD --ks-key-alias=$KEY_ALIAS --key-pass=env:KEY_PASSWORD
+        ./bundletool.sh build-apks --bundle=app/build/outputs/bundle/release/app-release.aab --output=app/build/outputs/bundle/release/app-release.aab --ks=release.jks --ks-pass=env:KEY_PASSWORD --ks-key-alias=$KEY_ALIAS --key-pass=env:KEY_PASSWORD
 
+    # artifactをアップロード
     - name: Upload Debug APK
       uses: actions/upload-artifact@v2.2.4
       with:
