@@ -3,37 +3,37 @@ package com.example.stairtree
 import android.content.Context
 import androidx.room.*
 
-@Database(entities = [SampleEntity::class], version = 1)
+@Database(entities = [SensorEntity::class], version = 1)
 abstract class AppDatabase : RoomDatabase() {
-    abstract fun sample() : SampleDao
+    abstract fun sensor() : SensorDao
 
     companion object {
         fun create(context: Context): AppDatabase = synchronized(this) {
-            Room.databaseBuilder(context, AppDatabase::class.java, "sample.db").build()
+            Room.databaseBuilder(context, AppDatabase::class.java, "sensor.db").build()
         }
     }
 }
 
-@Entity(tableName = "sample")
-data class SampleEntity(
-    @PrimaryKey val id: Int,
-    val name: String,
+@Entity(tableName = "sensor")
+data class SensorEntity(
+    @PrimaryKey val timeKey: String,
+    val value: Float,
 )
 
 @Dao
-interface SampleDao {
+interface SensorDao {
     @Insert
-    fun insert(database: SampleEntity)
+    fun insert(database: SensorEntity)
 
     @Update
-    fun update(database: SampleEntity)
+    fun update(database: SensorEntity)
 
     @Delete
-    fun delete(database: SampleEntity)
+    fun delete(database: SensorEntity)
 
-    @Query("delete from sample")
+    @Query("delete from sensor")
     fun deleteAll()
 
-    @Query("select * from sample")
-    fun selectAll(): List<SampleEntity>
+    @Query("select * from sensor")
+    fun selectAll(): List<SensorEntity>
 }
