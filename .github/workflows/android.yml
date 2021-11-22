@@ -58,9 +58,9 @@ jobs:
     - name: Compile Release APK
       run: ./gradlew assembleRelease
     # AABをコンパイル
-    - name: Compile Debug APK
+    - name: Compile Debug AAB
       run: ./gradlew bundleDebug
-    - name: Compile Release APK
+    - name: Compile Release AAB
       run: ./gradlew bundleRelease
 
     # リリースAPKに署名
