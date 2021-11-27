@@ -73,7 +73,7 @@ class SensorService : Service(), SensorEventListener {
 
     private val upDownJadge = upAndDownJudgment(100)
 
-    inner class betweenTime() {
+    inner class betweenTime {
         var time1: LocalTime? = null
         var time2: LocalTime? = null
         fun start(time: LocalTime) {
