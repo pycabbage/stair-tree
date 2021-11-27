@@ -16,6 +16,7 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+<<<<<<< HEAD
     <Button
             android:text="start"
             android:layout_width="wrap_content"
@@ -35,5 +36,16 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView" />
+=======
+    <ImageView
+            android:layout_width="262dp"
+            android:layout_height="338dp"
+            app:srcCompat="@drawable/ki"
+            android:id="@+id/imageView2"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/textView"
+            app:layout_constraintTop_toTopOf="parent" />
+>>>>>>> d8371645805f0323ed22813f5a277a3ab18a5189
 
 </androidx.constraintlayout.widget.ConstraintLayout>
