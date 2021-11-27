@@ -20,6 +20,7 @@ data class SensorEntity(
     val value: Float,
     val slope: Double,
     val between:Long,
+    val isele:Boolean,
 )
 
 @Dao
