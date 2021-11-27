@@ -103,11 +103,28 @@ class SensorService : Service(), SensorEventListener {
         }
     }
 
-    val between = betweenTime()
+    inner class isElevator() {
+        var data = mutableListOf<Double>()
+        fun push(item: Double) {
+            Log.i("pushedValue",item.toString())
+            data.add(item)
+        }
 
+        fun jadge(): Boolean {
+            val border = 0.025
+            return data.find { abs(it) > border } != null
+        }
+
+        fun reset() {
+            data = mutableListOf()
+        }
+    }
+
+    val between = betweenTime()
+    val isele = isElevator()
     override fun onSensorChanged(event: SensorEvent) {
-//        val millibarsOfPressure = event.values[0] / 100000 + 1000 これはエミュレーターで動かすときにいろいろやってたやつ
-        val millibarsOfPressure = event.values[0]
+        val millibarsOfPressure = event.values[0] / 100000 + 1000 //これはエミュレーターで動かすときにいろいろやってたやつ
+//        val millibarsOfPressure = event.values[0]
         val time = LocalTime.now()
         upDownJadge.push(millibarsOfPressure.toDouble())
         val slope = if (upDownJadge.possibleToJudge()) {
@@ -117,19 +134,32 @@ class SensorService : Service(), SensorEventListener {
         }
 
         var bet = 0L
+        var isEle = false
         val border = 0.005
         if (abs(slope) > border && !between.isStarted()) { //閾値を超え、かつまだスタート時間を取得していなかったら、
-            Log.i("state","閾値を超え、かつまだスタート時間を取得していない")
+            Log.i("state", "閾値を超え、かつまだスタート時間を取得していない")
             between.start(time) //　スタートを設定
+            isele.push(slope)
         } else if (abs(slope) <= border && between.isEnd()) { //閾値を超えておらず、かつ既に終了時間を取得していたら、
-            Log.i("state","閾値を超えておらず、かつ既に終了時間を取得している")
+            Log.i("state", "閾値を超えておらず、かつ既に終了時間を取得している")
             bet = between.between()
-            Log.i("between","between: " + between.between().toString() + " time: "  + time.toString())// 間の時間を出力
+            Log.i(
+                "between",
+                "between: " + between.between().toString() + " time: " + time.toString()
+            )// 間の時間を出力
+            if (isele.jadge()) {
+                Log.i("elevater", "Yes")
+                isEle = isele.jadge()
+            }
             between.reset() // リセット
+            isele.reset()
         } else if (abs(slope) <= border && between.isStarted()) { //閾値を超えておらず、かつスタート時間を取得しているなら。
-            Log.i("state","閾値を超えておらず、かつスタート時間を取得している")
-
+            Log.i("state", "閾値を超えておらず、かつスタート時間を取得している")
+            isele.push(slope)
             between.end(time) // 終了時間を取得
+        }
+        if(between.isStarted()){
+            isele.push(slope)
         }
 
         Log.i("sample", millibarsOfPressure.toString())
@@ -139,7 +169,8 @@ class SensorService : Service(), SensorEventListener {
                     time.toString(),
                     millibarsOfPressure,
                     slope,
-                    bet
+                    bet,
+                    isEle
                 )
             )
         }
