@@ -17,6 +17,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.time.LocalTime
+import java.time.temporal.ChronoUnit
+import kotlin.math.abs
 
 class SensorService : Service(), SensorEventListener {
     private lateinit var sensorManager: SensorManager
@@ -68,15 +70,76 @@ class SensorService : Service(), SensorEventListener {
     override fun onAccuracyChanged(sensor: Sensor, accuracy: Int) {
 
     }
-    val upDownJadge = upAndDownJudgment(50)
+
+    private val upDownJadge = upAndDownJudgment(100)
+
+    inner class betweenTime() {
+        var time1: LocalTime? = null
+        var time2: LocalTime? = null
+        fun start(time: LocalTime) {
+            time1 = time
+        }
+
+        fun isStarted(): Boolean {
+            return time1 != null
+        }
+
+        fun isEnd(): Boolean {
+            return time2 != null
+        }
+
+        fun end(time: LocalTime) {
+            time2 = time
+        }
+
+        fun between(): Long {
+            return ChronoUnit.MILLIS.between(time1, time2)
+        }
+
+        fun reset() {
+            time1 = null
+            time2 = null
+
+        }
+    }
+
+    val between = betweenTime()
+
     override fun onSensorChanged(event: SensorEvent) {
-        val millibarsOfPressure = event.values[0]/100000 + 1000
+        val millibarsOfPressure = event.values[0] / 100000 + 1000
+        val time = LocalTime.now()
         upDownJadge.push(millibarsOfPressure.toDouble())
-        val slope = if(upDownJadge.possibleToJudge()){upDownJadge.sloop()}else{0.0}
+        val slope = if (upDownJadge.possibleToJudge()) {
+            upDownJadge.sloop()
+        } else {
+            0.0
+        }
+
+        var bet = 0L
+        if (abs(slope) > 0.005 && !between.isStarted()) { //閾値を超え、かつまだスタート時間を取得していなかったら、
+            Log.i("state","閾値を超え、かつまだスタート時間を取得していない")
+            between.start(time) //　スタートを設定
+        } else if (abs(slope) <= 0.005 && between.isEnd()) { //閾値を超えておらず、かつ既に終了時間を取得していたら、
+            Log.i("state","閾値を超えておらず、かつ既に終了時間を取得している")
+            bet = between.between()
+            Log.i("between","between: " + between.between().toString() + " time: "  + time.toString())// 間の時間を出力
+            between.reset() // リセット
+        } else if (abs(slope) <= 0.005 && between.isStarted()) { //閾値を超えておらず、かつスタート時間を取得しているなら。
+            Log.i("state","閾値を超えておらず、かつスタート時間を取得している")
+
+            between.end(time) // 終了時間を取得
+        }
 
         Log.i("sample", millibarsOfPressure.toString())
         coroutineScope.launch {
-            sensorDatabase.insert(SensorEntity(LocalTime.now().toString(), millibarsOfPressure,slope))
+            sensorDatabase.insert(
+                SensorEntity(
+                    time.toString(),
+                    millibarsOfPressure,
+                    slope,
+                    bet
+                )
+            )
         }
     }
 

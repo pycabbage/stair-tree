@@ -19,6 +19,7 @@ data class SensorEntity(
     @PrimaryKey val timeKey: String,
     val value: Float,
     val slope: Double,
+    val between:Long,
 )
 
 @Dao
