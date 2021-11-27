@@ -68,12 +68,15 @@ class SensorService : Service(), SensorEventListener {
     override fun onAccuracyChanged(sensor: Sensor, accuracy: Int) {
 
     }
-
+    val upDownJadge = upAndDownJudgment(50)
     override fun onSensorChanged(event: SensorEvent) {
-        val millibarsOfPressure = event.values[0]
+        val millibarsOfPressure = event.values[0]/100000 + 1000
+        upDownJadge.push(millibarsOfPressure.toDouble())
+        val slope = if(upDownJadge.possibleToJudge()){upDownJadge.sloop()}else{0.0}
+
         Log.i("sample", millibarsOfPressure.toString())
         coroutineScope.launch {
-            sensorDatabase.insert(SensorEntity(LocalTime.now().toString(), millibarsOfPressure))
+            sensorDatabase.insert(SensorEntity(LocalTime.now().toString(), millibarsOfPressure,slope))
         }
     }
 

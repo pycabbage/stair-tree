@@ -5,7 +5,7 @@ import androidx.room.*
 
 @Database(entities = [SensorEntity::class], version = 1)
 abstract class AppDatabase : RoomDatabase() {
-    abstract fun sensor() : SensorDao
+    abstract fun sensor(): SensorDao
 
     companion object {
         fun create(context: Context): AppDatabase = synchronized(this) {
@@ -18,6 +18,7 @@ abstract class AppDatabase : RoomDatabase() {
 data class SensorEntity(
     @PrimaryKey val timeKey: String,
     val value: Float,
+    val slope: Double,
 )
 
 @Dao
