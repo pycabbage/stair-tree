@@ -106,7 +106,8 @@ class SensorService : Service(), SensorEventListener {
     val between = betweenTime()
 
     override fun onSensorChanged(event: SensorEvent) {
-        val millibarsOfPressure = event.values[0] / 100000 + 1000
+//        val millibarsOfPressure = event.values[0] / 100000 + 1000 これはエミュレーターで動かすときにいろいろやってたやつ
+        val millibarsOfPressure = event.values[0]
         val time = LocalTime.now()
         upDownJadge.push(millibarsOfPressure.toDouble())
         val slope = if (upDownJadge.possibleToJudge()) {
@@ -116,15 +117,16 @@ class SensorService : Service(), SensorEventListener {
         }
 
         var bet = 0L
-        if (abs(slope) > 0.005 && !between.isStarted()) { //閾値を超え、かつまだスタート時間を取得していなかったら、
+        val border = 0.005
+        if (abs(slope) > border && !between.isStarted()) { //閾値を超え、かつまだスタート時間を取得していなかったら、
             Log.i("state","閾値を超え、かつまだスタート時間を取得していない")
             between.start(time) //　スタートを設定
-        } else if (abs(slope) <= 0.005 && between.isEnd()) { //閾値を超えておらず、かつ既に終了時間を取得していたら、
+        } else if (abs(slope) <= border && between.isEnd()) { //閾値を超えておらず、かつ既に終了時間を取得していたら、
             Log.i("state","閾値を超えておらず、かつ既に終了時間を取得している")
             bet = between.between()
             Log.i("between","between: " + between.between().toString() + " time: "  + time.toString())// 間の時間を出力
             between.reset() // リセット
-        } else if (abs(slope) <= 0.005 && between.isStarted()) { //閾値を超えておらず、かつスタート時間を取得しているなら。
+        } else if (abs(slope) <= border && between.isStarted()) { //閾値を超えておらず、かつスタート時間を取得しているなら。
             Log.i("state","閾値を超えておらず、かつスタート時間を取得している")
 
             between.end(time) // 終了時間を取得
