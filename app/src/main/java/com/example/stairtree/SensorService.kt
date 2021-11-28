@@ -16,6 +16,7 @@ import androidx.core.app.NotificationCompat
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.time.LocalDate
 import java.time.LocalTime
 import java.time.temporal.ChronoUnit
 import kotlin.math.abs
@@ -25,6 +26,7 @@ class SensorService : Service(), SensorEventListener {
     private var pressure: Sensor? = null
     private lateinit var db: AppDatabase
     private lateinit var sensorDatabase: SensorDao
+    private lateinit var dailyDatabase: DailyDao
     private val coroutineScope = CoroutineScope(Dispatchers.Default)
 
     override fun onBind(intent: Intent): IBinder? {
@@ -106,7 +108,7 @@ class SensorService : Service(), SensorEventListener {
     inner class isElevator() {
         var data = mutableListOf<Double>()
         fun push(item: Double) {
-            Log.i("pushedValue",item.toString())
+            Log.i("pushedValue", item.toString())
             data.add(item)
         }
 
@@ -147,9 +149,24 @@ class SensorService : Service(), SensorEventListener {
                 "between",
                 "between: " + between.between().toString() + " time: " + time.toString()
             )// 間の時間を出力
+            var elevatorUsage = 0.0
+            var stairUsage = 0.0
             if (isele.jadge()) {
                 Log.i("elevater", "Yes")
                 isEle = isele.jadge()
+                elevatorUsage = bet.toDouble()
+            } else {
+                stairUsage = bet.toDouble()
+            }
+            coroutineScope.launch {
+                dailyDatabase.insert(
+                    DailyEntity(
+                        0,
+                        LocalDate.now().toString(),
+                        stairUsage,
+                        elevatorUsage,
+                    )
+                )
             }
             between.reset() // リセット
             isele.reset()
@@ -158,7 +175,8 @@ class SensorService : Service(), SensorEventListener {
             isele.push(slope)
             between.end(time) // 終了時間を取得
         }
-        if(between.isStarted()){
+
+        if (between.isStarted()) {
             isele.push(slope)
         }
 
@@ -180,6 +198,7 @@ class SensorService : Service(), SensorEventListener {
         super.onCreate()
         db = AppDatabase.create(applicationContext)
         sensorDatabase = db.sensor()
+        dailyDatabase = db.daily()
         sensorManager = getSystemService(SENSOR_SERVICE) as SensorManager
         pressure = sensorManager.getDefaultSensor(Sensor.TYPE_PRESSURE)
     }

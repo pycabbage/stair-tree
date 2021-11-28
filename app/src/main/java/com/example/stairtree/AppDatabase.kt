@@ -26,7 +26,10 @@ data class SensorEntity(
 
 @Entity(tableName = "daily")
 data class DailyEntity(
-    @PrimaryKey val date: String,
+
+    @PrimaryKey(autoGenerate = true) val id:Int,
+    val date: String,
+
     val stair: Double,
     val elevator: Double,
 )
