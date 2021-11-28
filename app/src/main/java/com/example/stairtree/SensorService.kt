@@ -13,6 +13,8 @@ import android.hardware.SensorManager
 import android.os.IBinder
 import android.util.Log
 import androidx.core.app.NotificationCompat
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -28,7 +30,7 @@ class SensorService : Service(), SensorEventListener {
     private lateinit var sensorDatabase: SensorDao
     private lateinit var dailyDatabase: DailyDao
     private val coroutineScope = CoroutineScope(Dispatchers.Default)
-
+    private val firebaseDb = Firebase.firestore
     override fun onBind(intent: Intent): IBinder? {
         return null
     }
@@ -158,6 +160,9 @@ class SensorService : Service(), SensorEventListener {
             } else {
                 stairUsage = bet.toDouble()
             }
+            val data = hashMapOf("date" to LocalDate.now().toString(),"stair" to stairUsage ,"elevator" to elevatorUsage)
+            firebaseDb.collection("data").add(data)
+
             coroutineScope.launch {
                 dailyDatabase.insert(
                     DailyEntity(
