@@ -63,6 +63,11 @@ jobs:
     - name: Compile Release AAB
       run: ./gradlew bundleRelease
 
+    - name: Prepare google-service.json
+      env: 
+        GOOGLE_SERVICE_JSON: ${{secrets.GOOGLE_SERVICE_JSON}}
+      run: echo $GOOGLE_SERVICE_JSON | base64 -d > app/google-services.json
+
     # リリースAPKに署名
     - name: Sign Release APK
       env:
