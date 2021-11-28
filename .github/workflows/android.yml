@@ -37,6 +37,11 @@ jobs:
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
 
+    - name: Prepare google-service.json
+      env: 
+        GOOGLE_SERVICE_JSON: ${{secrets.GOOGLE_SERVICE_JSON}}
+      run: echo $GOOGLE_SERVICE_JSON | base64 -d > app/google-services.json
+
     # 依存関係の出力
     - name: Displays the Android dependencies of the project
       env: 
@@ -62,11 +67,6 @@ jobs:
       run: ./gradlew bundleDebug
     - name: Compile Release AAB
       run: ./gradlew bundleRelease
-
-    - name: Prepare google-service.json
-      env: 
-        GOOGLE_SERVICE_JSON: ${{secrets.GOOGLE_SERVICE_JSON}}
-      run: echo $GOOGLE_SERVICE_JSON | base64 -d > app/google-services.json
 
     # リリースAPKに署名
     - name: Sign Release APK
