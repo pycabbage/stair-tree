@@ -75,7 +75,7 @@ class SensorService : Service(), SensorEventListener {
 
     }
 
-    private val upDownJadge = upAndDownJudgment(100)
+    private val upDownJadge = upAndDownJudgment(70)
 
     inner class betweenTime {
         var time1: LocalTime? = null
@@ -115,7 +115,7 @@ class SensorService : Service(), SensorEventListener {
         }
 
         fun jadge(): Boolean {
-            val border = 0.025
+            val border = 0.04
             return data.find { abs(it) > border } != null
         }
 
@@ -127,8 +127,8 @@ class SensorService : Service(), SensorEventListener {
     val between = betweenTime()
     val isele = isElevator()
     override fun onSensorChanged(event: SensorEvent) {
-        val millibarsOfPressure = event.values[0] / 100000 + 1000 //これはエミュレーターで動かすときにいろいろやってたやつ
-//        val millibarsOfPressure = event.values[0]
+//        val millibarsOfPressure = event.values[0] / 100000 + 1000 //これはエミュレーターで動かすときにいろいろやってたやつ
+        val millibarsOfPressure = event.values[0]
         val time = LocalTime.now()
         upDownJadge.push(millibarsOfPressure.toDouble())
         val slope = if (upDownJadge.possibleToJudge()) {
@@ -139,7 +139,7 @@ class SensorService : Service(), SensorEventListener {
 
         var bet = 0L
         var isEle = false
-        val border = 0.005
+        val border = 0.019
         if (abs(slope) > border && !between.isStarted()) { //閾値を超え、かつまだスタート時間を取得していなかったら、
             Log.i("state", "閾値を超え、かつまだスタート時間を取得していない")
             between.start(time) //　スタートを設定
