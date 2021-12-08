@@ -44,4 +44,24 @@
             app:layout_constraintGuide_percent="0.5"
             android:id="@+id/guideline" />
 
+    <Button
+            android:text="詳細"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/detail"
+            app:layout_constraintTop_toBottomOf="@+id/stop_button"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/worldMap" />
+
+    <Button
+            android:text="地図"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/worldMap"
+            app:layout_constraintTop_toBottomOf="@+id/service_button"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/detail" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

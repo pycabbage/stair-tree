@@ -30,6 +30,15 @@ class MainActivity : AppCompatActivity() {
             stopService(Intent(applicationContext, SensorService::class.java))
             Toast.makeText(applicationContext, "Sensor stopped", Toast.LENGTH_SHORT).show()
         }
+
+        binding.detail.setOnClickListener {
+//            val intent = Intent(applicationContext, ::class.java)
+//            startActivity(intent)
+        }
+        binding.worldMap.setOnClickListener {
+            val intent = Intent(applicationContext, MapActivity::class.java)
+            startActivity(intent)
+        }
     }
 }
 
