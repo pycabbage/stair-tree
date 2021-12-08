@@ -11,6 +11,8 @@ import com.example.stairtree.databinding.FragmentMapBinding
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
+import com.google.android.gms.maps.model.GroundOverlayOptions
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.maps.android.data.geojson.GeoJsonLayer
@@ -41,13 +43,10 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
-        googleMap.addMarker(
-            MarkerOptions()
-                .position(LatLng(0.0, 0.0))
-                .title("Marker")
-        )
+
         val country = getCountryGeoJson("usa")
         fillCountry(googleMap, country)
+        setTyphoon(googleMap)
     }
 
     fun getCountryGeoJson(country: String): Int {
@@ -58,4 +57,13 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         val layer = GeoJsonLayer(map, country, context)
         layer.addLayerToMap()
     }
+    fun setTyphoon(map:GoogleMap){
+        val newarkLatLng = LatLng(35.987261, 138.927622)
+        val newarkMap = GroundOverlayOptions()
+            .image(BitmapDescriptorFactory.fromResource(R.drawable.tayhoon))
+            .position(newarkLatLng, 860000f, 650000f)
+        map.addGroundOverlay(newarkMap)
+
+    }
+
 }
