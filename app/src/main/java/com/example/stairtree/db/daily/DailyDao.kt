@@ -19,7 +19,3 @@ interface DailyDao {
     @Query("select stair,elevator from daily")
     fun selectStairAndEle(): List<dataTuple>
 }
-data class dataTuple(
-    @ColumnInfo(name = "stair") val stair: Double,
-    @ColumnInfo(name = "elevator") val elevator: Double
-)
