@@ -1,4 +1,4 @@
-package com.example.stairtree
+package com.example.stairtree.background
 
 import kotlin.math.pow
 

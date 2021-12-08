@@ -1,4 +1,4 @@
-package com.example.stairtree
+package com.example.stairtree.background
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -13,6 +13,12 @@ import android.hardware.SensorManager
 import android.os.IBinder
 import android.util.Log
 import androidx.core.app.NotificationCompat
+import com.example.stairtree.R
+import com.example.stairtree.db.AppDatabase
+import com.example.stairtree.db.daily.DailyDao
+import com.example.stairtree.db.daily.DailyEntity
+import com.example.stairtree.db.sensor.SensorDao
+import com.example.stairtree.db.sensor.SensorEntity
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.CoroutineScope
@@ -160,7 +166,11 @@ class SensorService : Service(), SensorEventListener {
             } else {
                 stairUsage = bet.toDouble()
             }
-            val data = hashMapOf("date" to LocalDate.now().toString(),"stair" to stairUsage ,"elevator" to elevatorUsage)
+            val data = hashMapOf(
+                "date" to LocalDate.now().toString(),
+                "stair" to stairUsage,
+                "elevator" to elevatorUsage
+            )
             firebaseDb.collection("data").add(data)
 
             coroutineScope.launch {

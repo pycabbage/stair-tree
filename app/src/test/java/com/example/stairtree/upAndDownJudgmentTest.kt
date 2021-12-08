@@ -1,5 +1,6 @@
 package com.example.stairtree
 
+import com.example.stairtree.background.upAndDownJudgment
 import org.junit.Test
 import org.junit.Assert.*
 
