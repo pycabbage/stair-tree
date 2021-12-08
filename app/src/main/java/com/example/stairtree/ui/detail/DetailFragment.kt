@@ -2,28 +2,46 @@ package com.example.stairtree.ui.detail
 
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.example.stairtree.databinding.FragmentDetailBinding
+import com.example.stairtree.db.AppDatabase
+import com.example.stairtree.db.daily.DailyDao
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
 
 class DetailFragment : Fragment() {
 
     private val model by viewModels<DetailViewModel>()
     private var _binding: FragmentDetailBinding? = null
     private val binding get() = _binding!!
+    private val coroutineScope = CoroutineScope(Dispatchers.Default)
+    private lateinit var db: AppDatabase
+    private lateinit var dailyDatabase: DailyDao
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentDetailBinding.inflate(inflater, container, false)
+
+        coroutineScope.launch {
+            db = AppDatabase.create(requireContext())
+            dailyDatabase = db.daily()
+            for (i in dailyDatabase.selectStairAndEle()) {
+                Log.i("aaa", i.toString())
+            }
+        }
 
         val lineChart = binding.chart
         val x = listOf<Float>(1f, 2f, 3f, 5f, 8f, 13f, 21f, 34f)//X軸データ
@@ -56,7 +74,6 @@ class DetailFragment : Fragment() {
         //⑦linechart更新
         lineChart.invalidate()
         return binding.root
-
     }
 
     override fun onDestroyView() {
