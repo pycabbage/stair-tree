@@ -26,13 +26,6 @@ class DetailFragment : Fragment() {
         _binding = FragmentDetailBinding.inflate(inflater, container, false)
 
         val lineChart = binding.chart
-
-        // 文字色を灰色にする
-        lineChart.legend.textColor = Color.GRAY
-        lineChart.description.textColor = Color.GRAY
-        lineChart.xAxis.textColor = Color.GRAY
-        lineChart.axisRight.textColor = Color.GRAY
-
         val x = listOf<Float>(1f, 2f, 3f, 5f, 8f, 13f, 21f, 34f)//X軸データ
         val y = x.map{it*it}//Y軸データ（X軸の2乗）
         var entryList = mutableListOf<Entry>()//1本目の線
