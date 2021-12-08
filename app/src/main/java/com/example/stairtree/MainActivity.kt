@@ -32,8 +32,8 @@ class MainActivity : AppCompatActivity() {
         }
 
         binding.detail.setOnClickListener {
-//            val intent = Intent(applicationContext, ::class.java)
-//            startActivity(intent)
+            val intent = Intent(applicationContext, DetailActivity::class.java)
+            startActivity(intent)
         }
         binding.worldMap.setOnClickListener {
             val intent = Intent(applicationContext, MapActivity::class.java)
