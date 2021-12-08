@@ -15,8 +15,15 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun daily(): DailyDao
 
     companion object {
+        private var instance: AppDatabase? = null
+
         fun create(context: Context): AppDatabase = synchronized(this) {
-            Room.databaseBuilder(context, AppDatabase::class.java, "data.db").build()
+            return if(instance != null) {
+                instance!!
+            } else {
+                instance = Room.databaseBuilder(context, AppDatabase::class.java, "data.db").build()
+                instance!!
+            }
         }
     }
 }
