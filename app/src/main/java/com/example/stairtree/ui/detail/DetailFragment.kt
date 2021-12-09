@@ -37,7 +37,7 @@ class DetailFragment : Fragment() {
         coroutineScope.launch {
             db = AppDatabase.create(requireContext())
             dailyDatabase = db.daily()
-            for (i in dailyDatabase.selectStairAndEle()) {
+            for (i in dailyDatabase.selectAll()) {
                 Log.i("aaa", i.toString())
             }
         }

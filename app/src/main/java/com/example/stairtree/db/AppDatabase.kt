@@ -9,7 +9,7 @@ import com.example.stairtree.db.daily.DailyEntity
 import com.example.stairtree.db.sensor.SensorDao
 import com.example.stairtree.db.sensor.SensorEntity
 
-@Database(entities = [SensorEntity::class, DailyEntity::class], version = 1)
+@Database(entities = [SensorEntity::class, DailyEntity::class], version = 1, exportSchema = false)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun sensor(): SensorDao
     abstract fun daily(): DailyDao
