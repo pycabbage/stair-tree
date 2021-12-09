@@ -16,8 +16,8 @@ interface DailyDao {
     @Query("delete from daily")
     fun deleteAll()
 
-//    @Query("select stair,elevator from daily")
-//    fun selectStairAndEle(): List<dataTuple>
+    @Query("select stair,elevator from daily")
+    fun selectStairAndEle(): List<dataTuple>
 
     @Query("select sum(stair) from daily")
     fun selectStairSum(): Double
