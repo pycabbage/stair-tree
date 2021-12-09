@@ -1,6 +1,10 @@
 package com.example.stairtree.ui.map
 
 import android.app.AlertDialog
+import android.graphics.Color
+import android.graphics.Color.RED
+import android.graphics.ColorSpace
+import android.graphics.PorterDuff
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -30,6 +34,11 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentMapBinding.inflate(inflater, container, false)
+
+        binding.yabasa.max = 100
+        binding.yabasa.min = 0
+        binding.yabasa.progress = 30
+        binding.yabasa.progressDrawable.setColorFilter(Color.RED, PorterDuff.Mode.SRC_IN);
         return binding.root
     }
 
