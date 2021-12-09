@@ -17,7 +17,6 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.GroundOverlayOptions
 import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.MarkerOptions
 import com.google.maps.android.data.geojson.GeoJsonLayer
 
 class MapFragment : Fragment(), OnMapReadyCallback {
@@ -46,22 +45,23 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
-
         val country = getCountryGeoJson("usa")
         val greenLand = getCountryGeoJson("grl")
-        fillCountry(googleMap,country)
+        fillCountry(googleMap, country)
         fillCountry(googleMap, greenLand).setOnFeatureClickListener { feature ->
-                // BuilderからAlertDialogを作成
-                val dialog = AlertDialog.Builder(requireContext())
-                    .setTitle("グリーンランドについて") // タイトル
-                    .setMessage("グリーンランドは、\n" +
-                            "2100年まで海面が60cm上昇といわれています。") // メッセージ
-                    .setPositiveButton("ok") { dialog, which -> // OK
-                        Toast.makeText(context, "OKがタップされた", Toast.LENGTH_SHORT).show()
-                    }
-                    .create()
-                // AlertDialogを表示
-                dialog.show()
+            // BuilderからAlertDialogを作成
+            val dialog = AlertDialog.Builder(requireContext())
+                .setTitle("グリーンランドについて") // タイトル
+                .setMessage(
+                    "グリーンランドは、\n" +
+                            "2100年まで海面が60cm上昇といわれています。"
+                ) // メッセージ
+                .setPositiveButton("ok") { dialog, which -> // OK
+                    Toast.makeText(context, "OKがタップされた", Toast.LENGTH_SHORT).show()
+                }
+                .create()
+            // AlertDialogを表示
+            dialog.show()
         }
         setTyphoon(googleMap)
     }
@@ -70,12 +70,13 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         return resources.getIdentifier(country, "raw", activity?.packageName)
     }
 
-    fun fillCountry(map: GoogleMap, country: Int):GeoJsonLayer {
+    fun fillCountry(map: GoogleMap, country: Int): GeoJsonLayer {
         val layer = GeoJsonLayer(map, country, context)
         layer.addLayerToMap()
         return layer
     }
-    fun setTyphoon(map:GoogleMap){
+
+    fun setTyphoon(map: GoogleMap) {
         val newarkLatLng = LatLng(35.987261, 138.927622)
         val newarkMap = GroundOverlayOptions()
             .image(BitmapDescriptorFactory.fromResource(R.drawable.tayhoon))
