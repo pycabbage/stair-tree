@@ -50,9 +50,9 @@ class HomeFragment : Fragment() {
             val co2Emittion = dailyDatabase.selectStairSum() / 60000
             val co2Reduction = dailyDatabase.selectElevatorSum() / 60000
             if (co2Emittion > co2Reduction) {
-                binding.usage.text = "木%,.2f本分の二酸化炭素排出".format(co2Emittion - co2Reduction)
+                binding.usage.text = "木%,.2f本分の二酸化炭素排出...".format(co2Emittion - co2Reduction)
             } else {
-                binding.usage.text = "木%,.2f本分の二酸化炭素削減".format(co2Reduction - co2Emittion)
+                binding.usage.text = "木%,.2f本分の二酸化炭素削減!".format(co2Reduction - co2Emittion)
 
             }
 
