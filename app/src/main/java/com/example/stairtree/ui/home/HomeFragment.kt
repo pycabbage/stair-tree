@@ -2,7 +2,6 @@ package com.example.stairtree.ui.home
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,12 +11,12 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.example.stairtree.background.SensorService
 import com.example.stairtree.databinding.FragmentHomeBinding
-import androidx.room.Room
 import com.example.stairtree.db.AppDatabase
 import com.example.stairtree.db.daily.DailyDao
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+
 
 class HomeFragment : Fragment() {
 
@@ -44,9 +43,13 @@ class HomeFragment : Fragment() {
             activity?.stopService(Intent(context, SensorService::class.java))
             Toast.makeText(context, "Sensor stopped", Toast.LENGTH_SHORT).show()
         }
+
+        //binding.CO2.speed = 0.03 スピードを変更できる
+
         db = AppDatabase.create(requireContext())
         dailyDatabase = db.daily()
         coroutineScope.launch {
+
             val co2Emittion = dailyDatabase.selectStairSum() / 60000
             val co2Reduction = dailyDatabase.selectElevatorSum() / 60000
             if (co2Emittion > co2Reduction) {
