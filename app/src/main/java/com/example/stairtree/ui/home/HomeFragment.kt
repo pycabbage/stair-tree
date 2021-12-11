@@ -2,7 +2,6 @@ package com.example.stairtree.ui.home
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -68,18 +67,14 @@ class HomeFragment : Fragment() {
             }
         }
 
-        db = AppDatabase.create(requireContext())
-        dailyDatabase = db.daily()
-        coroutineScope.launch {
-
-            val co2Emittion = dailyDatabase.selectStairSum() / 60000
-            val co2Reduction = dailyDatabase.selectElevatorSum() / 60000
-            if (co2Emittion > co2Reduction) {
-                binding.usage.text = "木%,.2f本分の二酸化炭素排出...".format(co2Emittion - co2Reduction)
+        model.selectElevatorSum2.observe(viewLifecycleOwner) {
+            val co2Emission = it.stair / 60000
+            val co2Reduction = it.elevator / 60000
+            if (co2Emission > co2Reduction) {
+                binding.usage.text = "木%,.2f本分の二酸化炭素排出...".format(co2Emission - co2Reduction)
             } else {
-                binding.usage.text = "木%,.2f本分の二酸化炭素削減!".format(co2Reduction - co2Emittion)
+                binding.usage.text = "木%,.2f本分の二酸化炭素削減!".format(co2Reduction - co2Emission)
             }
-
         }
 
         return binding.root

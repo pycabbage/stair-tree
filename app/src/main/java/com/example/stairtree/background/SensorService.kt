@@ -172,7 +172,6 @@ class SensorService : Service(), SensorEventListener {
                 "elevator" to elevatorUsage
             )
 
-            Log.i("sample", "wwwwwwwwwwwwww")
             firebaseDb.collection("data").add(data)
             coroutineScope.launch {
                 dailyDatabase.insert(
@@ -196,7 +195,6 @@ class SensorService : Service(), SensorEventListener {
             isele.push(slope)
         }
 
-        Log.i("sample", millibarsOfPressure.toString())
         coroutineScope.launch {
             sensorDatabase.insert(
                 SensorEntity(
@@ -216,7 +214,7 @@ class SensorService : Service(), SensorEventListener {
         sensorDatabase = db.sensor()
         dailyDatabase = db.daily()
         sensorManager = getSystemService(SENSOR_SERVICE) as SensorManager
-        pressure = sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT)
+        pressure = sensorManager.getDefaultSensor(Sensor.TYPE_PRESSURE)
     }
 
     override fun onDestroy() {
