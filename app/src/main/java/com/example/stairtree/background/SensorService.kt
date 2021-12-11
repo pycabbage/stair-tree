@@ -83,9 +83,9 @@ class SensorService : Service(), SensorEventListener {
 
     private val upDownJadge = upAndDownJudgment(70)
 
-    inner class betweenTime {
-        var time1: LocalTime? = null
-        var time2: LocalTime? = null
+    inner class BetweenTime {
+        private var time1: LocalTime? = null
+        private var time2: LocalTime? = null
         fun start(time: LocalTime) {
             time1 = time
         }
@@ -113,7 +113,7 @@ class SensorService : Service(), SensorEventListener {
         }
     }
 
-    inner class isElevator() {
+    inner class IsElevator {
         var data = mutableListOf<Double>()
         fun push(item: Double) {
             Log.i("pushedValue", item.toString())
@@ -130,8 +130,8 @@ class SensorService : Service(), SensorEventListener {
         }
     }
 
-    val between = betweenTime()
-    val isele = isElevator()
+    val between = BetweenTime()
+    val isele = IsElevator()
     override fun onSensorChanged(event: SensorEvent) {
 //        val millibarsOfPressure = event.values[0] / 100000 + 1000 //これはエミュレーターで動かすときにいろいろやってたやつ
         val millibarsOfPressure = event.values[0]
@@ -171,8 +171,8 @@ class SensorService : Service(), SensorEventListener {
                 "stair" to stairUsage,
                 "elevator" to elevatorUsage
             )
-            firebaseDb.collection("data").add(data)
 
+            firebaseDb.collection("data").add(data)
             coroutineScope.launch {
                 dailyDatabase.insert(
                     DailyEntity(
@@ -195,7 +195,6 @@ class SensorService : Service(), SensorEventListener {
             isele.push(slope)
         }
 
-        Log.i("sample", millibarsOfPressure.toString())
         coroutineScope.launch {
             sensorDatabase.insert(
                 SensorEntity(

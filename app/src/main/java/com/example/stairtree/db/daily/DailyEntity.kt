@@ -12,7 +12,7 @@ data class DailyEntity(
     val elevator: Double,
 )
 
-data class dataTuple(
+data class DataTuple(
     @ColumnInfo(name = "stair") val stair: Double,
     @ColumnInfo(name = "elevator") val elevator: Double
 )
