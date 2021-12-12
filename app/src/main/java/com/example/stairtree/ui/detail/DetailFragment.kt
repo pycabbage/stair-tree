@@ -70,7 +70,7 @@ class DetailFragment : Fragment() {
                 val lineDataSets = mutableListOf<ILineDataSet>()
 
                 //②DataSetにデータ格納
-                val lineDataSet = LineDataSet(entryList, "square")
+                val lineDataSet = LineDataSet(entryList, if (isChecked) "階段使用量" else "エレベーター使用量")
 
                 //③DataSetにフォーマット指定(3章で詳説)
                 lineDataSet.color = Color.CYAN
