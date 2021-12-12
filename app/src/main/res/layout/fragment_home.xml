@@ -53,7 +53,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/treeimage"
             app:layout_constraintBottom_toTopOf="@+id/worldusing"
-            app:layout_constraintVertical_chainStyle="packed" />
+            app:layout_constraintVertical_chainStyle="packed"
+            android:textSize="24sp" />
 
     <TextView
             android:text="世界木0.00本文のCO2排出"
@@ -63,7 +64,8 @@
             app:layout_constraintTop_toBottomOf="@+id/usage"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintBottom_toTopOf="@+id/guideline2" />
+            app:layout_constraintBottom_toTopOf="@+id/guideline2"
+            android:textSize="24sp" />
 
     <com.example.stairtree.ui.home.CO2
             android:layout_width="0dp"
