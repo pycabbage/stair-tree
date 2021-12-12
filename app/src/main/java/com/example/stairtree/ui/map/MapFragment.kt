@@ -169,82 +169,13 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                         startActivity(intent)
                     }
                     .setPositiveButton("ok") { _, _ -> // OK
-                        Toast.makeText(context, "OKがタップされた", Toast.LENGTH_SHORT).show()
                     }
                     .create()
                 // AlertDialogを表示
                 dialog.show()
             }
         }
-//
-//        val usa = getCountryGeoJson("usa")
-//        val tuv = getCountryGeoJson("tuv")
-//        val bgd = getCountryGeoJson("bgd")
-//        fillCountry(
-//            googleMap,
-//            usa,
-//            markerManager,
-//            groundOverlayManager,
-//            polygonManager,
-//            polylineManager
-//        ).setOnFeatureClickListener {
-//            val dialog = AlertDialog.Builder(requireContext())
-//                .setTitle("アメリカで発生した地球温暖化の事例")
-//                .setMessage("アメリカのフロリダ半島に巨大ハリケーンカトリーナが上陸、その後ルイジアナ州に再上陸、大きな被害をもたらしました。")
-//                .setNegativeButton("詳細") { _, _ ->
-//                    val intent = Intent(activity, MapDetailActivity::class.java)
-//                    intent.putExtra("title", "アメリカ")
-//                    intent.putExtra(
-//                        "message",
-//                        "アメリカのフロリダ半島に巨大ハリケーンカトリーナが上陸、その後ルイジアナ州に再上陸、大きな被害をもたらしました。"
-//                    )
-//                    startActivity(intent)
-//                }
-//                .setPositiveButton("ok") { _, _ -> // OK
-//                    Toast.makeText(context, "OKがタップされた", Toast.LENGTH_SHORT).show()
-//                }
-//                .create()
-//            // AlertDialogを表示
-//            dialog.show()
-//
-//        }
-//
-//        fillCountry(
-//            googleMap,
-//            tuv,
-//            markerManager,
-//            groundOverlayManager,
-//            polygonManager,
-//            polylineManager
-//        ).setOnFeatureClickListener {
-//            val dialog = AlertDialog.Builder(requireContext())
-//                .setTitle("ツバル")
-//                .setMessage("")
-//                .setPositiveButton("ok") { _, _ -> // OK
-//                    Toast.makeText(context, "OKがタップされた", Toast.LENGTH_SHORT).show()
-//                }
-//                .create()
-//            // AlertDialogを表示
-//            dialog.show()
-//
-//        }
-//        fillCountry(
-//            googleMap, bgd, markerManager,
-//            groundOverlayManager,
-//            polygonManager,
-//            polylineManager
-//        ).setOnFeatureClickListener {
-//            val dialog = AlertDialog.Builder(requireContext())
-//                .setTitle("バングラデシュ")
-//                .setMessage("地球温暖化によるサイクロンによって、多くの死者が出ています")
-//                .setPositiveButton("ok") { _, _ -> // OK
-//                    Toast.makeText(context, "OKがタップされた", Toast.LENGTH_SHORT).show()
-//                }
-//                .create()
-//            // AlertDialogを表示
-//            dialog.show()
-//
-//        }
+
     }
 
     fun level2(googleMap: GoogleMap) {
@@ -282,60 +213,12 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                         startActivity(intent)
                     }
                     .setPositiveButton("ok") { _, _ -> // OK
-                        Toast.makeText(context, "OKがタップされた", Toast.LENGTH_SHORT).show()
                     }
                     .create()
                 // AlertDialogを表示
                 dialog.show()
             }
         }
-
-//        val greenLand = getCountryGeoJson("grl")
-//        val jpn = getCountryGeoJson("jpn")
-//
-//        fillCountry(
-//            googleMap,
-//            greenLand,
-//            markerManager,
-//            groundOverlayManager,
-//            polygonManager,
-//            polylineManager
-//        ).setOnFeatureClickListener {
-//            // BuilderからAlertDialogを作成
-//            val dialog = AlertDialog.Builder(requireContext())
-//                .setTitle("グリーンランドについて") // タイトル
-//                .setMessage(
-//                    "グリーンランドは、\n" +
-//                            "2100年までに海面が60cm上昇するといわれています。"
-//                ) // メッセージ
-//                .setPositiveButton("ok") { _, _ -> // OK
-//                    Toast.makeText(context, "OKがタップされた", Toast.LENGTH_SHORT).show()
-//                }
-//                .create()
-//            // AlertDialogを表示
-//            dialog.show()
-//        }
-//        fillCountry(
-//            googleMap,
-//            jpn,
-//            markerManager,
-//            groundOverlayManager,
-//            polygonManager,
-//            polylineManager
-//        ).setOnFeatureClickListener {
-//            // BuilderからAlertDialogを作成
-//            val dialog = AlertDialog.Builder(requireContext())
-//                .setTitle("日本について") // タイトル
-//                .setMessage(
-//                    "日本は100年後スーパー台風ってのがめっちゃ増えます"
-//                ) // メッセージ
-//                .setPositiveButton("ok") { _, _ -> // OK
-//                    Toast.makeText(context, "OKがタップされた", Toast.LENGTH_SHORT).show()
-//                }
-//                .create()
-//            // AlertDialogを表示
-//            dialog.show()
-//        }
 
         setTyphoon(googleMap)
     }
