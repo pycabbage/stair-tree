@@ -1,6 +1,7 @@
 package com.example.stairtree.ui.map
 
 import android.app.AlertDialog
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.PorterDuff
 import android.os.Bundle
@@ -12,6 +13,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.example.stairtree.R
 import com.example.stairtree.databinding.FragmentMapBinding
+import com.example.stairtree.ui.map.detail.MapDetailActivity
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
@@ -119,6 +121,11 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             val dialog = AlertDialog.Builder(requireContext())
                 .setTitle("アメリカで発生した地球温暖化の事例")
                 .setMessage("アメリカのフロリダ半島に巨大ハリケーンカトリーナが上陸、その後ルイジアナ州に再上陸、大きな被害をもたらしました。")
+                .setNegativeButton("詳細") { _, _ ->
+                    val intent = Intent(activity, MapDetailActivity::class.java)
+                    intent.putExtra("title", "アメリカ")
+                    startActivity(intent)
+                }
                 .setPositiveButton("ok") { _, _ -> // OK
                     Toast.makeText(context, "OKがタップされた", Toast.LENGTH_SHORT).show()
                 }

@@ -12,6 +12,9 @@
             android:supportsRtl="true"
             android:theme="@style/Theme.StairTree">
         <activity
+                android:name=".ui.map.detail.MapDetailActivity"
+                android:exported="false" />
+        <activity
                 android:name=".MainActivity"
                 android:exported="true"
                 android:screenOrientation="portrait">
@@ -21,6 +24,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <receiver
                 android:name=".background.SensorReceiver"
                 android:enabled="true"
@@ -29,11 +33,13 @@
                 <action android:name="android.intent.action.LOCALE_CHANGED" />
             </intent-filter>
         </receiver>
+
         <service
                 android:name=".background.SensorService"
                 android:enabled="true"
                 android:exported="false"
                 android:permission="TODO" />
+
         <meta-data
                 android:name="com.google.android.geo.API_KEY"
                 android:value="${MAPS_API_KEY}" />
