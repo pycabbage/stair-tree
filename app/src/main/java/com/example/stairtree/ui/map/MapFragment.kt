@@ -169,7 +169,6 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                         startActivity(intent)
                     }
                     .setPositiveButton("ok") { _, _ -> // OK
-                        Toast.makeText(context, "OKがタップされた", Toast.LENGTH_SHORT).show()
                     }
                     .create()
                 // AlertDialogを表示
@@ -282,7 +281,6 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                         startActivity(intent)
                     }
                     .setPositiveButton("ok") { _, _ -> // OK
-                        Toast.makeText(context, "OKがタップされた", Toast.LENGTH_SHORT).show()
                     }
                     .create()
                 // AlertDialogを表示
