@@ -15,14 +15,11 @@ import com.example.stairtree.db.daily.DailyDao
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
+import com.github.mikephil.charting.formatter.ValueFormatter
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet
-import com.github.mikephil.charting.utils.ViewPortHandler
-import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.util.*
-import kotlin.time.Duration.Companion.days
 
 //class MyXAxisValueFormatter: IndexAxisValueFormatter {
 //    override fun getXValue(dateInMillisecons: String, index: Int, viewPortHandler: ViewPortHandler): String? {
@@ -63,7 +60,8 @@ class DetailFragment : Fragment() {
             db = AppDatabase.create(requireContext())
             dailyDatabase = db.daily()
             var dbdata: MutableMap<String, Double> = mutableMapOf()
-            dailyDatabase.selectAll().forEach {
+            val dbbbbbb = dailyDatabase.selectAll()
+            dbbbbbb.forEach {
                 val _data = if (dataE) it.elevator else it.stair
                 if (dbdata.containsKey(it.date)) {
                     dbdata[it.date] = _data + dbdata[it.date]!!
@@ -71,17 +69,35 @@ class DetailFragment : Fragment() {
                     dbdata[it.date] = _data
                 }
             }
+            Log.i("aaaaa", dbdata.toString())
             val lineChart = binding.chart
-            val x = dbdata.keys.map { strDateToFloat(it) }
+            var n = 0f
+            val x = dbdata.keys.map {
+//                df.format(it).toString()
+                n = n + 1f
+                n
+            }
             val y = dbdata.entries.map { it.value.toFloat() }
-            Log.i("x", x.toString())
-            Log.i("y", y.toString())
+//            Log.i("x", x.toString())
+//            Log.i("y", y.toString())
             var entryList = mutableListOf<Entry>()  // 1本目の線
             for (i in x.indices) {
                 entryList.add(
                     Entry(x[i], y[i])
                 )
             }
+
+            val xAxisFormatter = object : ValueFormatter() {
+                var count = 0
+                override fun getFormattedValue(value: Float): String {
+                    // value には 0, 1, 2... という index が入ってくるので
+                    // index からタイムスタンプを取得する
+                    Log.i("value", value.toString())
+                    if(count == dbdata.keys.size) count = 0
+                    return (dbdata.keys.map{it}[count++])
+                }
+            }
+
             val lineDataSets = mutableListOf<ILineDataSet>()
             //②DataSetにデータ格納
             val lineDataSet = LineDataSet(entryList, "square")
@@ -99,8 +115,9 @@ class DetailFragment : Fragment() {
             //⑥Chartのフォーマット指定(3章で詳説)
             //X軸の設定
             lineChart.xAxis.apply {
-                isEnabled = true
+//                isEnabled = true
                 textColor = Color.GRAY
+                valueFormatter = xAxisFormatter
             }
 
             lineChart.axisLeft.apply {
