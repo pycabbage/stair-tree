@@ -116,6 +116,21 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                 countryJson = "bgd"
             )
         )
+        val level2Message = listOf(
+            MapDetailEntity(
+                country = "グリーンランド",
+                title = "グリーンランドについて",
+                message = " \"グリーンランドは、\\n\" +\n" +
+                        "                            \"2100年までに海面が60cm上昇するといわれています。\"",
+                countryJson = "grl"
+            ),
+            MapDetailEntity(
+                country = "日本",
+                title = "日本について",
+                message = "日本は100年後スーパー台風ってのがめっちゃ増えます",
+                countryJson = "jpn"
+            )
+        )
     }
 
     fun level1(googleMap: GoogleMap) {
@@ -244,52 +259,83 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         val polygonManager = PolygonManager(googleMap)
         val polylineManager = PolylineManager(googleMap)
 
-        val greenLand = getCountryGeoJson("grl")
-        val jpn = getCountryGeoJson("jpn")
+        level2Message.forEach { mapMemo ->
+            val json = getCountryGeoJson(mapMemo.countryJson)
+            fillCountry(
+                googleMap,
+                json,
+                markerManager,
+                groundOverlayManager,
+                polygonManager,
+                polylineManager
+            ).setOnFeatureClickListener {
+                val dialog = AlertDialog.Builder(requireContext())
+                    .setTitle(mapMemo.title)
+                    .setMessage(mapMemo.message)
+                    .setNegativeButton("詳細") { _, _ ->
+                        val intent = Intent(activity, MapDetailActivity::class.java)
+                        intent.putExtra("title", mapMemo.country)
+                        intent.putExtra(
+                            "message",
+                            mapMemo.message
+                        )
+                        startActivity(intent)
+                    }
+                    .setPositiveButton("ok") { _, _ -> // OK
+                        Toast.makeText(context, "OKがタップされた", Toast.LENGTH_SHORT).show()
+                    }
+                    .create()
+                // AlertDialogを表示
+                dialog.show()
+            }
+        }
 
-        fillCountry(
-            googleMap,
-            greenLand,
-            markerManager,
-            groundOverlayManager,
-            polygonManager,
-            polylineManager
-        ).setOnFeatureClickListener {
-            // BuilderからAlertDialogを作成
-            val dialog = AlertDialog.Builder(requireContext())
-                .setTitle("グリーンランドについて") // タイトル
-                .setMessage(
-                    "グリーンランドは、\n" +
-                            "2100年までに海面が60cm上昇するといわれています。"
-                ) // メッセージ
-                .setPositiveButton("ok") { _, _ -> // OK
-                    Toast.makeText(context, "OKがタップされた", Toast.LENGTH_SHORT).show()
-                }
-                .create()
-            // AlertDialogを表示
-            dialog.show()
-        }
-        fillCountry(
-            googleMap,
-            jpn,
-            markerManager,
-            groundOverlayManager,
-            polygonManager,
-            polylineManager
-        ).setOnFeatureClickListener {
-            // BuilderからAlertDialogを作成
-            val dialog = AlertDialog.Builder(requireContext())
-                .setTitle("日本について") // タイトル
-                .setMessage(
-                    "日本は100年後スーパー台風ってのがめっちゃ増えます"
-                ) // メッセージ
-                .setPositiveButton("ok") { _, _ -> // OK
-                    Toast.makeText(context, "OKがタップされた", Toast.LENGTH_SHORT).show()
-                }
-                .create()
-            // AlertDialogを表示
-            dialog.show()
-        }
+//        val greenLand = getCountryGeoJson("grl")
+//        val jpn = getCountryGeoJson("jpn")
+//
+//        fillCountry(
+//            googleMap,
+//            greenLand,
+//            markerManager,
+//            groundOverlayManager,
+//            polygonManager,
+//            polylineManager
+//        ).setOnFeatureClickListener {
+//            // BuilderからAlertDialogを作成
+//            val dialog = AlertDialog.Builder(requireContext())
+//                .setTitle("グリーンランドについて") // タイトル
+//                .setMessage(
+//                    "グリーンランドは、\n" +
+//                            "2100年までに海面が60cm上昇するといわれています。"
+//                ) // メッセージ
+//                .setPositiveButton("ok") { _, _ -> // OK
+//                    Toast.makeText(context, "OKがタップされた", Toast.LENGTH_SHORT).show()
+//                }
+//                .create()
+//            // AlertDialogを表示
+//            dialog.show()
+//        }
+//        fillCountry(
+//            googleMap,
+//            jpn,
+//            markerManager,
+//            groundOverlayManager,
+//            polygonManager,
+//            polylineManager
+//        ).setOnFeatureClickListener {
+//            // BuilderからAlertDialogを作成
+//            val dialog = AlertDialog.Builder(requireContext())
+//                .setTitle("日本について") // タイトル
+//                .setMessage(
+//                    "日本は100年後スーパー台風ってのがめっちゃ増えます"
+//                ) // メッセージ
+//                .setPositiveButton("ok") { _, _ -> // OK
+//                    Toast.makeText(context, "OKがタップされた", Toast.LENGTH_SHORT).show()
+//                }
+//                .create()
+//            // AlertDialogを表示
+//            dialog.show()
+//        }
 
         setTyphoon(googleMap)
     }
