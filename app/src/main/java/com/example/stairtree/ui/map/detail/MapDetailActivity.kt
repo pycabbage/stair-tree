@@ -1,8 +1,7 @@
 package com.example.stairtree.ui.map.detail
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.Toolbar
+import androidx.appcompat.app.AppCompatActivity
 import com.example.stairtree.databinding.ActivityMapDetailBinding
 
 class MapDetailActivity : AppCompatActivity() {
@@ -11,5 +10,6 @@ class MapDetailActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
         supportActionBar?.title = intent.getStringExtra("title")
+        binding.textView.text = intent.getStringExtra("message")
     }
 }

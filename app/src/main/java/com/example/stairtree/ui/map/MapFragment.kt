@@ -14,6 +14,7 @@ import androidx.fragment.app.viewModels
 import com.example.stairtree.R
 import com.example.stairtree.databinding.FragmentMapBinding
 import com.example.stairtree.ui.map.detail.MapDetailActivity
+import com.example.stairtree.ui.map.detail.MapDetailEntity
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
@@ -94,6 +95,29 @@ class MapFragment : Fragment(), OnMapReadyCallback {
 
     }
 
+    companion object {
+        val level1Message = listOf(
+            MapDetailEntity(
+                country = "アメリカ",
+                title = "アメリカで発生した地球温暖化の事例",
+                message = "アメリカのフロリダ半島に巨大ハリケーンカトリーナが上陸、その後ルイジアナ州に再上陸、大きな被害をもたらしました。",
+                countryJson = "usa"
+            ),
+            MapDetailEntity(
+                country = "ツバル",
+                title = "ツバル",
+                message = "",
+                countryJson = "tuv"
+            ),
+            MapDetailEntity(
+                country = "バングラデシュ",
+                title = "バングラデシュ",
+                message = "地球温暖化によるサイクロンによって、多くの死者が出ています",
+                countryJson = "bgd"
+            )
+        )
+    }
+
     fun level1(googleMap: GoogleMap) {
         binding.yabasa.max = 100
         binding.yabasa.min = 0
@@ -107,68 +131,105 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         val polygonManager = PolygonManager(googleMap)
         val polylineManager = PolylineManager(googleMap)
 
-        val usa = getCountryGeoJson("usa")
-        val tuv = getCountryGeoJson("tuv")
-        val bgd = getCountryGeoJson("bgd")
-        fillCountry(
-            googleMap,
-            usa,
-            markerManager,
-            groundOverlayManager,
-            polygonManager,
-            polylineManager
-        ).setOnFeatureClickListener {
-            val dialog = AlertDialog.Builder(requireContext())
-                .setTitle("アメリカで発生した地球温暖化の事例")
-                .setMessage("アメリカのフロリダ半島に巨大ハリケーンカトリーナが上陸、その後ルイジアナ州に再上陸、大きな被害をもたらしました。")
-                .setNegativeButton("詳細") { _, _ ->
-                    val intent = Intent(activity, MapDetailActivity::class.java)
-                    intent.putExtra("title", "アメリカ")
-                    startActivity(intent)
-                }
-                .setPositiveButton("ok") { _, _ -> // OK
-                    Toast.makeText(context, "OKがタップされた", Toast.LENGTH_SHORT).show()
-                }
-                .create()
-            // AlertDialogを表示
-            dialog.show()
-
+        level1Message.forEach { mapMemo ->
+            val json = getCountryGeoJson(mapMemo.countryJson)
+            fillCountry(
+                googleMap,
+                json,
+                markerManager,
+                groundOverlayManager,
+                polygonManager,
+                polylineManager
+            ).setOnFeatureClickListener {
+                val dialog = AlertDialog.Builder(requireContext())
+                    .setTitle(mapMemo.title)
+                    .setMessage(mapMemo.message)
+                    .setNegativeButton("詳細") { _, _ ->
+                        val intent = Intent(activity, MapDetailActivity::class.java)
+                        intent.putExtra("title", mapMemo.country)
+                        intent.putExtra(
+                            "message",
+                            mapMemo.message
+                        )
+                        startActivity(intent)
+                    }
+                    .setPositiveButton("ok") { _, _ -> // OK
+                        Toast.makeText(context, "OKがタップされた", Toast.LENGTH_SHORT).show()
+                    }
+                    .create()
+                // AlertDialogを表示
+                dialog.show()
+            }
         }
-
-        fillCountry(
-            googleMap, tuv, markerManager,
-            groundOverlayManager,
-            polygonManager,
-            polylineManager
-        ).setOnFeatureClickListener {
-            val dialog = AlertDialog.Builder(requireContext())
-                .setTitle("ツバル")
-                .setMessage("")
-                .setPositiveButton("ok") { _, _ -> // OK
-                    Toast.makeText(context, "OKがタップされた", Toast.LENGTH_SHORT).show()
-                }
-                .create()
-            // AlertDialogを表示
-            dialog.show()
-
-        }
-        fillCountry(
-            googleMap, bgd, markerManager,
-            groundOverlayManager,
-            polygonManager,
-            polylineManager
-        ).setOnFeatureClickListener {
-            val dialog = AlertDialog.Builder(requireContext())
-                .setTitle("バングラデシュ")
-                .setMessage("地球温暖化によるサイクロンによって、多くの死者が出ています")
-                .setPositiveButton("ok") { _, _ -> // OK
-                    Toast.makeText(context, "OKがタップされた", Toast.LENGTH_SHORT).show()
-                }
-                .create()
-            // AlertDialogを表示
-            dialog.show()
-
-        }
+//
+//        val usa = getCountryGeoJson("usa")
+//        val tuv = getCountryGeoJson("tuv")
+//        val bgd = getCountryGeoJson("bgd")
+//        fillCountry(
+//            googleMap,
+//            usa,
+//            markerManager,
+//            groundOverlayManager,
+//            polygonManager,
+//            polylineManager
+//        ).setOnFeatureClickListener {
+//            val dialog = AlertDialog.Builder(requireContext())
+//                .setTitle("アメリカで発生した地球温暖化の事例")
+//                .setMessage("アメリカのフロリダ半島に巨大ハリケーンカトリーナが上陸、その後ルイジアナ州に再上陸、大きな被害をもたらしました。")
+//                .setNegativeButton("詳細") { _, _ ->
+//                    val intent = Intent(activity, MapDetailActivity::class.java)
+//                    intent.putExtra("title", "アメリカ")
+//                    intent.putExtra(
+//                        "message",
+//                        "アメリカのフロリダ半島に巨大ハリケーンカトリーナが上陸、その後ルイジアナ州に再上陸、大きな被害をもたらしました。"
+//                    )
+//                    startActivity(intent)
+//                }
+//                .setPositiveButton("ok") { _, _ -> // OK
+//                    Toast.makeText(context, "OKがタップされた", Toast.LENGTH_SHORT).show()
+//                }
+//                .create()
+//            // AlertDialogを表示
+//            dialog.show()
+//
+//        }
+//
+//        fillCountry(
+//            googleMap,
+//            tuv,
+//            markerManager,
+//            groundOverlayManager,
+//            polygonManager,
+//            polylineManager
+//        ).setOnFeatureClickListener {
+//            val dialog = AlertDialog.Builder(requireContext())
+//                .setTitle("ツバル")
+//                .setMessage("")
+//                .setPositiveButton("ok") { _, _ -> // OK
+//                    Toast.makeText(context, "OKがタップされた", Toast.LENGTH_SHORT).show()
+//                }
+//                .create()
+//            // AlertDialogを表示
+//            dialog.show()
+//
+//        }
+//        fillCountry(
+//            googleMap, bgd, markerManager,
+//            groundOverlayManager,
+//            polygonManager,
+//            polylineManager
+//        ).setOnFeatureClickListener {
+//            val dialog = AlertDialog.Builder(requireContext())
+//                .setTitle("バングラデシュ")
+//                .setMessage("地球温暖化によるサイクロンによって、多くの死者が出ています")
+//                .setPositiveButton("ok") { _, _ -> // OK
+//                    Toast.makeText(context, "OKがタップされた", Toast.LENGTH_SHORT).show()
+//                }
+//                .create()
+//            // AlertDialogを表示
+//            dialog.show()
+//
+//        }
     }
 
     fun level2(googleMap: GoogleMap) {
