@@ -8,13 +8,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.example.stairtree.R
 import com.example.stairtree.databinding.FragmentMapBinding
 import com.example.stairtree.ui.map.detail.MapDetailActivity
 import com.example.stairtree.ui.map.detail.MapDetailEntity
+import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
@@ -56,6 +56,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     override fun onMapReady(googleMap: GoogleMap) {
 
         level1(googleMap)
+        moveMap(googleMap, 100.0, 100.0, 1f)
         // level2(googleMap)
 
     }
@@ -221,6 +222,18 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         }
 
         setTyphoon(googleMap)
+    }
+
+    fun moveMap(map: GoogleMap, latitude: Double, longitude: Double, zoom: Float = 1f) {
+        map.moveCamera(
+            CameraUpdateFactory.newLatLngZoom(
+                LatLng(
+                    latitude,
+                    longitude
+                ),
+                zoom
+            )
+        )
     }
 
 }
