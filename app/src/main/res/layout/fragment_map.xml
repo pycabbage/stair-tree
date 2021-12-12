@@ -35,4 +35,16 @@
                 android:id="@+id/yabasa" />
     </LinearLayout>
 
+    <Button
+            android:text="新しい国が追加されました"
+            android:layout_width="82dp"
+            android:layout_height="86dp"
+            android:id="@+id/newCountry"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.93"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintVertical_bias="0.110000014" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
