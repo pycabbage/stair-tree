@@ -2,7 +2,6 @@ package com.example.stairtree.ui.detail
 
 import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -34,37 +33,28 @@ class DetailFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentDetailBinding.inflate(inflater, container, false)
-        val toggle = binding.toggleButton
         val lineChart = binding.chart
-        val dataE = false  // true: elevator  false: stair
-//        val toggle = binding.toggleButton
+        val toggle = binding.toggleButton
         toggle.setOnCheckedChangeListener { _, isChecked ->
             coroutineScope.launch {
                 db = AppDatabase.create(requireContext())
                 dailyDatabase = db.daily()
                 val dbData: MutableMap<String, Double> = mutableMapOf()
-                val dbAll = dailyDatabase.selectAll()
-                dbAll.forEach {
-                    val data = if (isChecked) it.elevator else it.stair
+                dailyDatabase.selectAll().forEach {
+                    val data = if (isChecked) it.stair else it.elevator
                     if (dbData.containsKey(it.date)) {
                         dbData[it.date] = data + dbData[it.date]!!
                     } else {
                         dbData[it.date] = data
                     }
                 }
-                var n = 0f
-                val x = dbData.keys.map {
-                    n += 1f
-                    n
+                val x = dbData.keys.mapIndexed { index, _ ->
+                    (index + 1).toFloat()
                 }
                 val y = dbData.entries.map { it.value.toFloat() }
-//            Log.i("x", x.toString())
-//            Log.i("y", y.toString())
                 val entryList: MutableList<Entry> = mutableListOf()  // 1本目の線
                 for (i in x.indices) {
-                    entryList.add(
-                        Entry(x[i], y[i])
-                    )
+                    entryList.add(Entry(x[i], y[i]))
                 }
 
                 val xAxisFormatter = object : ValueFormatter() {
@@ -72,15 +62,16 @@ class DetailFragment : Fragment() {
                     override fun getFormattedValue(value: Float): String {
                         // value には 0, 1, 2... という index が入ってくるので
                         // index からタイムスタンプを取得する
-                        Log.i("value", value.toString())
                         if (count == dbData.keys.size) count = 0
                         return (dbData.keys.map { it }[count++])
                     }
                 }
 
                 val lineDataSets = mutableListOf<ILineDataSet>()
+
                 //②DataSetにデータ格納
-                val lineDataSet = LineDataSet(entryList, "square")
+                val lineDataSet = LineDataSet(entryList, if (isChecked) "階段使用量" else "エレベーター使用量")
+
                 //③DataSetにフォーマット指定(3章で詳説)
                 lineDataSet.color = Color.CYAN
                 lineChart.legend.textColor = Color.CYAN
@@ -95,18 +86,13 @@ class DetailFragment : Fragment() {
                 //⑥Chartのフォーマット指定(3章で詳説)
                 //X軸の設定
                 lineChart.xAxis.apply {
-//                isEnabled = true
+                    isEnabled = true
                     textColor = Color.GRAY
                     valueFormatter = xAxisFormatter
                 }
 
-                lineChart.axisLeft.apply {
-                    textColor = Color.GRAY
-                }
-
-                lineChart.axisRight.apply {
-                    textColor = Color.GRAY
-                }
+                lineChart.axisLeft.apply { textColor = Color.GRAY }
+                lineChart.axisRight.apply { textColor = Color.GRAY }
 
                 //⑦lineChart更新
                 lineChart.invalidate()
