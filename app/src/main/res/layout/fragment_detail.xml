@@ -24,7 +24,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toTopOf="@+id/chart"
-            android:textOff="階段"
-            android:textOn="エレベーター" />
+            android:textOff="エレベーター"
+            android:textOn="階段" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
