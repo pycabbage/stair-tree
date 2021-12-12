@@ -9,6 +9,7 @@ import android.widget.Toast
 import androidx.core.content.ContextCompat.startForegroundService
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import com.example.stairtree.R
 import com.example.stairtree.background.SensorService
 import com.example.stairtree.databinding.FragmentHomeBinding
 import com.example.stairtree.db.AppDatabase
@@ -36,7 +37,6 @@ class HomeFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
-
         binding.serviceButton.setOnClickListener {
             val serviceIntent = Intent(context, SensorService::class.java)
             startForegroundService(context!!, serviceIntent)
@@ -72,8 +72,10 @@ class HomeFragment : Fragment() {
             val co2Reduction = it.elevator / 60000
             if (co2Emission > co2Reduction) {
                 binding.usage.text = "木%,.2f本分の二酸化炭素排出...".format(co2Emission - co2Reduction)
+                binding.treeimage.setImageResource(R.drawable.kareta_ki)
             } else {
                 binding.usage.text = "木%,.2f本分の二酸化炭素削減!".format(co2Reduction - co2Emission)
+                binding.treeimage.setImageResource(R.drawable.ki)
             }
         }
 
