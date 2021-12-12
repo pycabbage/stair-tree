@@ -4,7 +4,6 @@ import android.app.AlertDialog
 import android.graphics.Color
 import android.graphics.PorterDuff
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -23,7 +22,6 @@ import com.google.maps.android.collections.GroundOverlayManager
 import com.google.maps.android.collections.MarkerManager
 import com.google.maps.android.collections.PolygonManager
 import com.google.maps.android.collections.PolylineManager
-import com.google.maps.android.data.geojson.GeoJsonFeature
 import com.google.maps.android.data.geojson.GeoJsonLayer
 
 class MapFragment : Fragment(), OnMapReadyCallback {
@@ -55,15 +53,23 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     override fun onMapReady(googleMap: GoogleMap) {
 
         level1(googleMap)
+        // level2(googleMap)
 
     }
 
-    fun getCountryGeoJson(country: String): Int {
+    private fun getCountryGeoJson(country: String): Int {
         return resources.getIdentifier(country, "raw", activity?.packageName)
     }
 
-    fun fillCountry(map: GoogleMap, country: Int,markerManager:MarkerManager,groundOverlayManager:GroundOverlayManager,polygonManager:PolygonManager,polylineManager:PolylineManager): GeoJsonLayer {
-        val layer =  GeoJsonLayer(
+    fun fillCountry(
+        map: GoogleMap,
+        country: Int,
+        markerManager: MarkerManager,
+        groundOverlayManager: GroundOverlayManager,
+        polygonManager: PolygonManager,
+        polylineManager: PolylineManager
+    ): GeoJsonLayer {
+        val layer = GeoJsonLayer(
             map,
             country,
             context,
@@ -91,16 +97,96 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         binding.yabasa.min = 0
         binding.yabasa.progress = 30
         binding.yabasa.progressDrawable.setColorFilter(Color.RED, PorterDuff.Mode.SRC_IN)
+        binding.textView3.text = "地球温暖化レベル1"
+
         // GeoJSON polygon
         val markerManager = MarkerManager(googleMap)
-        val groundOverlayManager = GroundOverlayManager(googleMap!!)
+        val groundOverlayManager = GroundOverlayManager(googleMap)
         val polygonManager = PolygonManager(googleMap)
         val polylineManager = PolylineManager(googleMap)
 
         val usa = getCountryGeoJson("usa")
-        val greenLand = getCountryGeoJson("grl")
+        val tuv = getCountryGeoJson("tuv")
+        val bgd = getCountryGeoJson("bgd")
+        fillCountry(
+            googleMap,
+            usa,
+            markerManager,
+            groundOverlayManager,
+            polygonManager,
+            polylineManager
+        ).setOnFeatureClickListener {
+            val dialog = AlertDialog.Builder(requireContext())
+                .setTitle("アメリカで発生した地球温暖化の事例")
+                .setMessage("アメリカのフロリダ半島に巨大ハリケーンカトリーナが上陸、その後ルイジアナ州に再上陸、大きな被害をもたらしました。")
+                .setPositiveButton("ok") { _, _ -> // OK
+                    Toast.makeText(context, "OKがタップされた", Toast.LENGTH_SHORT).show()
+                }
+                .create()
+            // AlertDialogを表示
+            dialog.show()
 
-        fillCountry(googleMap, greenLand,markerManager,groundOverlayManager,polygonManager,polylineManager).setOnFeatureClickListener {
+        }
+
+        fillCountry(
+            googleMap, tuv, markerManager,
+            groundOverlayManager,
+            polygonManager,
+            polylineManager
+        ).setOnFeatureClickListener {
+            val dialog = AlertDialog.Builder(requireContext())
+                .setTitle("ツバル")
+                .setMessage("")
+                .setPositiveButton("ok") { _, _ -> // OK
+                    Toast.makeText(context, "OKがタップされた", Toast.LENGTH_SHORT).show()
+                }
+                .create()
+            // AlertDialogを表示
+            dialog.show()
+
+        }
+        fillCountry(
+            googleMap, bgd, markerManager,
+            groundOverlayManager,
+            polygonManager,
+            polylineManager
+        ).setOnFeatureClickListener {
+            val dialog = AlertDialog.Builder(requireContext())
+                .setTitle("バングラデシュ")
+                .setMessage("地球温暖化によるサイクロンによって、多くの死者が出ています")
+                .setPositiveButton("ok") { _, _ -> // OK
+                    Toast.makeText(context, "OKがタップされた", Toast.LENGTH_SHORT).show()
+                }
+                .create()
+            // AlertDialogを表示
+            dialog.show()
+
+        }
+    }
+
+    fun level2(googleMap: GoogleMap) {
+        binding.yabasa.max = 100
+        binding.yabasa.min = 0
+        binding.yabasa.progress = 30
+        binding.yabasa.progressDrawable.setColorFilter(Color.RED, PorterDuff.Mode.SRC_IN)
+        binding.textView3.text = "地球温暖化レベル2"
+        // GeoJSON polygon
+        val markerManager = MarkerManager(googleMap)
+        val groundOverlayManager = GroundOverlayManager(googleMap)
+        val polygonManager = PolygonManager(googleMap)
+        val polylineManager = PolylineManager(googleMap)
+
+        val greenLand = getCountryGeoJson("grl")
+        val jpn = getCountryGeoJson("jpn")
+
+        fillCountry(
+            googleMap,
+            greenLand,
+            markerManager,
+            groundOverlayManager,
+            polygonManager,
+            polylineManager
+        ).setOnFeatureClickListener {
             // BuilderからAlertDialogを作成
             val dialog = AlertDialog.Builder(requireContext())
                 .setTitle("グリーンランドについて") // タイトル
@@ -115,18 +201,28 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             // AlertDialogを表示
             dialog.show()
         }
-        fillCountry(googleMap, usa,markerManager,groundOverlayManager,polygonManager,polylineManager).setOnFeatureClickListener {
+        fillCountry(
+            googleMap,
+            jpn,
+            markerManager,
+            groundOverlayManager,
+            polygonManager,
+            polylineManager
+        ).setOnFeatureClickListener {
+            // BuilderからAlertDialogを作成
             val dialog = AlertDialog.Builder(requireContext())
-                .setTitle("アメリカで発生した地球温暖化の事例")
-                .setMessage("アメリカのフロリダ半島に巨大ハリケーンカトリーナが上陸、その後ルイジアナ州に再上陸、大きな被害をもたらしました。")
+                .setTitle("日本について") // タイトル
+                .setMessage(
+                    "日本は100年後スーパー台風ってのがめっちゃ増えます"
+                ) // メッセージ
                 .setPositiveButton("ok") { _, _ -> // OK
                     Toast.makeText(context, "OKがタップされた", Toast.LENGTH_SHORT).show()
                 }
                 .create()
             // AlertDialogを表示
             dialog.show()
-
         }
+
         setTyphoon(googleMap)
     }
 
