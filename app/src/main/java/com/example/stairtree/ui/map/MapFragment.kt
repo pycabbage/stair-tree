@@ -26,6 +26,10 @@ import com.google.maps.android.collections.MarkerManager
 import com.google.maps.android.collections.PolygonManager
 import com.google.maps.android.collections.PolylineManager
 import com.google.maps.android.data.geojson.GeoJsonLayer
+import android.net.Uri
+
+
+
 
 class MapFragment : Fragment(), OnMapReadyCallback {
 
@@ -101,20 +105,23 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             MapDetailEntity(
                 country = "アメリカ",
                 title = "アメリカで発生した地球温暖化の事例",
-                message = "アメリカのフロリダ半島に巨大ハリケーンカトリーナが上陸、その後ルイジアナ州に再上陸、大きな被害をもたらしました。",
-                countryJson = "usa"
+                message = "アメリカのフロリダ半島に巨大が上陸、その後ルイジアナ州に再上陸、大きな被害をもたらしました。",
+                countryJson = "usa",
+                articleURL = "https://www.bbc.com/japanese/50384396",
             ),
             MapDetailEntity(
                 country = "ツバル",
                 title = "ツバル",
                 message = "",
-                countryJson = "tuv"
+                countryJson = "tuv",
+                articleURL = "https://www3.nhk.or.jp/news/html/20211110/k10013341181000.html",
             ),
             MapDetailEntity(
                 country = "バングラデシュ",
                 title = "バングラデシュ",
                 message = "地球温暖化によるサイクロンによって、多くの死者が出ています",
-                countryJson = "bgd"
+                countryJson = "bgd",
+                articleURL = "https://www.unicef.or.jp/news/2019/0057.html",
             )
         )
         val level2Message = listOf(
@@ -123,13 +130,15 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                 title = "グリーンランドについて",
                 message = " \"グリーンランドは、\\n\" +\n" +
                         "                            \"2100年までに海面が60cm上昇するといわれています。\"",
-                countryJson = "grl"
+                countryJson = "grl",
+                articleURL = "https://style.nikkei.com/article/DGXMZO64709280X01C20A0000000/",
             ),
             MapDetailEntity(
                 country = "日本",
                 title = "日本について",
                 message = "日本は100年後スーパー台風ってのがめっちゃ増えます",
-                countryJson = "jpn"
+                countryJson = "jpn",
+                articleURL = "https://www.nikkei.com/article/DGXNASDG29034_Z20C12A5CR8000/",
             )
         )
     }
@@ -167,7 +176,8 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                             "message",
                             mapMemo.message
                         )
-                        startActivity(intent)
+                        val intentWeb = Intent(Intent.ACTION_VIEW, Uri.parse(mapMemo.articleURL))
+                        startActivity(intentWeb)
                     }
                     .setPositiveButton("ok") { _, _ -> // OK
                     }
@@ -176,7 +186,6 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                 dialog.show()
             }
         }
-
     }
 
     fun level2(googleMap: GoogleMap) {

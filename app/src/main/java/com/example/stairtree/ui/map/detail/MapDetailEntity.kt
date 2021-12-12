@@ -5,4 +5,5 @@ data class MapDetailEntity(
     val title: String,
     val message: String,
     val countryJson: String,
+    val articleURL: String,
 )
