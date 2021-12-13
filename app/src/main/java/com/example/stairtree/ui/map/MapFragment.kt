@@ -27,8 +27,12 @@ import com.google.maps.android.collections.PolygonManager
 import com.google.maps.android.collections.PolylineManager
 import com.google.maps.android.data.geojson.GeoJsonLayer
 import android.net.Uri
-
-
+import android.util.Log
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 
 class MapFragment : Fragment(), OnMapReadyCallback {
@@ -36,12 +40,41 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     private val model by viewModels<MapViewModel>()
     private var _binding: FragmentMapBinding? = null
     private val binding get() = _binding!!
+    private val coroutineScope = CoroutineScope(Dispatchers.Default)
+    private val firebaseDb = Firebase.firestore
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentMapBinding.inflate(inflater, container, false)
+
+
+        coroutineScope.launch {
+            firebaseDb.collection("data").get().addOnSuccessListener {
+                var stairSum = 0.0
+                var elevatorSum = 0.0
+                for (element in it) {
+                    stairSum += element["stair"].toString().toDouble()
+                    elevatorSum += element["elevator"].toString().toDouble()
+                }
+                Log.i("stairSum",stairSum.toString())
+                Log.i("elevatorSum",elevatorSum.toString())
+                if(elevatorSum > stairSum*2){
+                    binding.textView3.text = "地球温暖化レベル2"
+                }else if (elevatorSum > stairSum){
+                    binding.textView3.text = "地球温暖化レベル1"
+                }else {
+                    binding.textView3.text = "地球温暖化レベル0"
+                }
+                binding.yabasa.max = 100
+                binding.yabasa.min = 0
+                binding.yabasa.progress = (stairSum%elevatorSum/elevatorSum*100).toInt()
+                binding.yabasa.progressDrawable.setColorFilter(Color.RED, PorterDuff.Mode.SRC_IN)
+            }
+        }
+
+
 
         return binding.root
     }
@@ -144,11 +177,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     }
 
     fun level1(googleMap: GoogleMap) {
-        binding.yabasa.max = 100
-        binding.yabasa.min = 0
-        binding.yabasa.progress = 30
-        binding.yabasa.progressDrawable.setColorFilter(Color.RED, PorterDuff.Mode.SRC_IN)
-        binding.textView3.text = "地球温暖化レベル1"
+
 
         // GeoJSON polygon
         val markerManager = MarkerManager(googleMap)
@@ -189,11 +218,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     }
 
     fun level2(googleMap: GoogleMap) {
-        binding.yabasa.max = 100
-        binding.yabasa.min = 0
-        binding.yabasa.progress = 30
-        binding.yabasa.progressDrawable.setColorFilter(Color.RED, PorterDuff.Mode.SRC_IN)
-        binding.textView3.text = "地球温暖化レベル2"
+
         // GeoJSON polygon
         val markerManager = MarkerManager(googleMap)
         val groundOverlayManager = GroundOverlayManager(googleMap)
