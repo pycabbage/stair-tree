@@ -195,6 +195,7 @@ class SensorService : Service(), SensorEventListener {
             isele.push(slope)
         }
 
+        Log.i("sample", millibarsOfPressure.toString())
         coroutineScope.launch {
             sensorDatabase.insert(
                 SensorEntity(
@@ -214,7 +215,7 @@ class SensorService : Service(), SensorEventListener {
         sensorDatabase = db.sensor()
         dailyDatabase = db.daily()
         sensorManager = getSystemService(SENSOR_SERVICE) as SensorManager
-        pressure = sensorManager.getDefaultSensor(Sensor.TYPE_PRESSURE)
+        pressure = sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT)
     }
 
     override fun onDestroy() {
