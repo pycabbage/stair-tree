@@ -6,6 +6,7 @@ import android.graphics.Color
 import android.graphics.PorterDuff
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -78,21 +79,26 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                 binding.yabasa.min = 0
                 binding.yabasa.progress = (stairSum % elevatorSum / elevatorSum * 100).toInt()
                 binding.yabasa.progressDrawable.setColorFilter(Color.RED, PorterDuff.Mode.SRC_IN)
-                nowCountryNumber =
-                    (stairSum % elevatorSum / elevatorSum * level1Message.size).toInt()
                 var nowCountry = level1Message[0]
                 if (elevatorSum > stairSum * 2) {
                     binding.textView3.text = "地球温暖化レベル2"
+                    nowCountryNumber =
+                        (stairSum % elevatorSum / elevatorSum * level2Message.size).toInt()
+
                     level2(googleMap)
                     nowCountry = level2Message[nowCountryNumber]
                 } else if (elevatorSum > stairSum) {
                     binding.textView3.text = "地球温暖化レベル1"
+                    nowCountryNumber =
+                        (stairSum % elevatorSum / elevatorSum * level1Message.size).toInt()
+
                     level1(googleMap)
                     nowCountry = level1Message[nowCountryNumber]
                 } else {
                     binding.textView3.text = "地球温暖化レベル0"
                 }
-                moveMap(googleMap, nowCountry.latitude, nowCountry.longitude)
+                Log.i("nowCountry", nowCountry.toString())
+                moveMap(googleMap, nowCountry.latitude, nowCountry.longitude, 3F)
 
             }
         }
@@ -169,12 +175,11 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             MapDetailEntity(
                 country = "グリーンランド",
                 title = "グリーンランドについて",
-                message = " \"グリーンランドは、\\n\" +\n" +
-                        "                            \"2100年までに海面が60cm上昇するといわれています。\"",
+                message = " グリーンランドは、2100年までに海面が60cm上昇するといわれています。",
                 countryJson = "grl",
                 articleURL = "https://style.nikkei.com/article/DGXMZO64709280X01C20A0000000/",
-                latitude = -42.6043,
-                longitude = 71.7069
+                latitude = 71.7069,
+                longitude = -42.6043
             ),
             MapDetailEntity(
                 country = "日本",
