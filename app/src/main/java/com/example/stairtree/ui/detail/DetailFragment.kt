@@ -35,7 +35,7 @@ class DetailFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View{
+    ): View {
         _binding = FragmentDetailBinding.inflate(inflater, container, false)
         val lineChart = binding.chart
         val toggle = binding.toggleButton
@@ -46,12 +46,15 @@ class DetailFragment : Fragment() {
                 var month = mutableListOf<String>()
                 calendar.time = date
                 for (i in 0..30) {
-                    month.add(calendar.get(Calendar.YEAR).toString() + "-" + (calendar.get(Calendar.MONTH)+1).toString()+ "-" + calendar.get(Calendar.DATE).toString())
-                    Log.i("month",calendar.time.toString())
+                    month.add(
+                        calendar.get(Calendar.YEAR)
+                            .toString() + "-" + (calendar.get(Calendar.MONTH) + 1).toString() + "-" + calendar.get(
+                            Calendar.DATE
+                        ).toString()
+                    )
                     calendar.add(Calendar.DATE, -1)
                 }
                 month.reverse()
-                Log.i("month", month.toString())
 
                 db = AppDatabase.create(requireContext())
                 dailyDatabase = db.daily()
@@ -61,17 +64,16 @@ class DetailFragment : Fragment() {
                     val data = if (isChecked) it.stair else it.elevator
                     if (dbData.containsKey(it.date)) {
                         dbData[it.date] = data + dbData[it.date]!!
-//                        Log.i("it.date",it.date)
                     } else {
                         dbData[it.date] = data
                     }
                 }
                 val x: List<Float> = (0..30).toList().map { it.toFloat() }
                 val y = (0..30).toList().map {
-                    Log.i("month[it]",month[it])
+                    Log.i("month[it]", month[it])
                     if (dbData.containsKey(month[it])) {
-                         dbData[month[it]]!!.toFloat()
-                    }else {
+                        dbData[month[it]]!!.toFloat()
+                    } else {
                         0F
                     }
                 }
@@ -81,13 +83,6 @@ class DetailFragment : Fragment() {
                 }
 
                 val xAxisFormatter = object : ValueFormatter() {
-//                    var count = 0
-//                    override fun getFormattedValue(value: Float): String {
-//                        // value には 0, 1, 2... という index が入ってくるので
-//                        // index からタイムスタンプを取得する
-//                        if (count == dbData.keys.size) count = 0
-//                        return (month[count])
-//                    }
 
                     override fun getAxisLabel(value: Float, axis: AxisBase?): String {
                         Log.i("jfsdkljfl", value.toString())
