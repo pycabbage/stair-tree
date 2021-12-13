@@ -4,6 +4,7 @@ import android.app.AlertDialog
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.PorterDuff
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -21,15 +22,13 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.GroundOverlayOptions
 import com.google.android.gms.maps.model.LatLng
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
 import com.google.maps.android.collections.GroundOverlayManager
 import com.google.maps.android.collections.MarkerManager
 import com.google.maps.android.collections.PolygonManager
 import com.google.maps.android.collections.PolylineManager
 import com.google.maps.android.data.geojson.GeoJsonLayer
-import android.net.Uri
-import android.util.Log
-import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -42,37 +41,12 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     private val binding get() = _binding!!
     private val coroutineScope = CoroutineScope(Dispatchers.Default)
     private val firebaseDb = Firebase.firestore
-
+    private var nowCountryNumber: Int = 0
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentMapBinding.inflate(inflater, container, false)
-
-
-        coroutineScope.launch {
-            firebaseDb.collection("data").get().addOnSuccessListener {
-                var stairSum = 0.0
-                var elevatorSum = 0.0
-                for (element in it) {
-                    stairSum += element["stair"].toString().toDouble()
-                    elevatorSum += element["elevator"].toString().toDouble()
-                }
-                Log.i("stairSum",stairSum.toString())
-                Log.i("elevatorSum",elevatorSum.toString())
-                if(elevatorSum > stairSum*2){
-                    binding.textView3.text = "地球温暖化レベル2"
-                }else if (elevatorSum > stairSum){
-                    binding.textView3.text = "地球温暖化レベル1"
-                }else {
-                    binding.textView3.text = "地球温暖化レベル0"
-                }
-                binding.yabasa.max = 100
-                binding.yabasa.min = 0
-                binding.yabasa.progress = (stairSum%elevatorSum/elevatorSum*100).toInt()
-                binding.yabasa.progressDrawable.setColorFilter(Color.RED, PorterDuff.Mode.SRC_IN)
-            }
-        }
 
 
 
@@ -91,10 +65,38 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
+        coroutineScope.launch {
+            firebaseDb.collection("data").get().addOnSuccessListener {
+                var stairSum = 0.0
+                var elevatorSum = 0.0
+                for (element in it) {
+                    stairSum += element["stair"].toString().toDouble()
+                    elevatorSum += element["elevator"].toString().toDouble()
+                }
 
-        level1(googleMap)
-        moveMap(googleMap, 100.0, 100.0, 1f)
-        // level2(googleMap)
+                binding.yabasa.max = 100
+                binding.yabasa.min = 0
+                binding.yabasa.progress = (stairSum % elevatorSum / elevatorSum * 100).toInt()
+                binding.yabasa.progressDrawable.setColorFilter(Color.RED, PorterDuff.Mode.SRC_IN)
+                nowCountryNumber =
+                    (stairSum % elevatorSum / elevatorSum * level1Message.size).toInt()
+                var nowCountry = level1Message[0]
+                if (elevatorSum > stairSum * 2) {
+                    binding.textView3.text = "地球温暖化レベル2"
+                    level2(googleMap)
+                    nowCountry = level2Message[nowCountryNumber]
+                } else if (elevatorSum > stairSum) {
+                    binding.textView3.text = "地球温暖化レベル1"
+                    level1(googleMap)
+                    nowCountry = level1Message[nowCountryNumber]
+                } else {
+                    binding.textView3.text = "地球温暖化レベル0"
+                }
+                moveMap(googleMap, nowCountry.latitude, nowCountry.longitude)
+
+            }
+        }
+
 
     }
 
@@ -141,6 +143,8 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                 message = "アメリカのフロリダ半島に巨大が上陸、その後ルイジアナ州に再上陸、大きな被害をもたらしました。",
                 countryJson = "usa",
                 articleURL = "https://www.bbc.com/japanese/50384396",
+                latitude = -95.7128,
+                longitude = 37.0902
             ),
             MapDetailEntity(
                 country = "ツバル",
@@ -148,6 +152,8 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                 message = "",
                 countryJson = "tuv",
                 articleURL = "https://www3.nhk.or.jp/news/html/20211110/k10013341181000.html",
+                latitude = -8.516667,
+                longitude = 179.216667
             ),
             MapDetailEntity(
                 country = "バングラデシュ",
@@ -155,6 +161,8 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                 message = "地球温暖化によるサイクロンによって、多くの死者が出ています",
                 countryJson = "bgd",
                 articleURL = "https://www.unicef.or.jp/news/2019/0057.html",
+                latitude = 22.7,
+                longitude = 90.35,
             )
         )
         val level2Message = listOf(
@@ -165,6 +173,8 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                         "                            \"2100年までに海面が60cm上昇するといわれています。\"",
                 countryJson = "grl",
                 articleURL = "https://style.nikkei.com/article/DGXMZO64709280X01C20A0000000/",
+                latitude = -42.6043,
+                longitude = 71.7069
             ),
             MapDetailEntity(
                 country = "日本",
@@ -172,12 +182,13 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                 message = "日本は100年後スーパー台風ってのがめっちゃ増えます",
                 countryJson = "jpn",
                 articleURL = "https://www.nikkei.com/article/DGXNASDG29034_Z20C12A5CR8000/",
+                latitude = 24.0,
+                longitude = 153.0
             )
         )
     }
 
     fun level1(googleMap: GoogleMap) {
-
 
         // GeoJSON polygon
         val markerManager = MarkerManager(googleMap)
