@@ -69,7 +69,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             val elevatorSum = it
                 .map { elevatorIt -> elevatorIt["elevator"].toString().toDouble() }
                 .reduce { acc, d -> acc + d }
-            val nowRatio = stairSum % elevatorSum / elevatorSum
+            val nowRatio = elevatorSum % stairSum  / elevatorSum
             var nowCountry = MapDetailObject.level1Message[0]
 
             binding.yabasa.apply {
