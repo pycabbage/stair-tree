@@ -10,9 +10,31 @@
             android:id="@+id/chart"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView2"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginStart="24dp" />
+
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="60dp"
+            android:id="@+id/textView5"
+            android:rotation="-90"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/chart"
+            android:layout_marginTop="16dp"
+            tools:text="@string/secondLabel"
+            android:text="@string/secondLabel" />
+
+    <TextView
+            android:text="@string/dayLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/textView2"
+            app:layout_constraintStart_toStartOf="@+id/chart"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginStart="32dp"
+            tools:text="@string/dayLabel" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">stair tree</string>
+    <string name="home">ホーム</string>
+    <string name="detail">詳細</string>
+    <string name="map">地図</string>
+    <string name="secondLabel">使用時間[s]</string>
+    <string name="dayLabel">日時</string>
+</resources>

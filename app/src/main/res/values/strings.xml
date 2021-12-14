@@ -3,4 +3,6 @@
     <string name="home">Home</string>
     <string name="detail">Detail</string>
     <string name="map">Map</string>
+    <string name="secondLabel">Usage Time[s]</string>
+    <string name="dayLabel">Date</string>
 </resources>
