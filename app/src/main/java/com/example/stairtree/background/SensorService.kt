@@ -30,7 +30,6 @@ import java.time.LocalDate
 import java.time.LocalTime
 import java.time.temporal.ChronoUnit
 import kotlin.math.abs
-import kotlin.random.Random
 
 class SensorService : Service(), SensorEventListener {
     private lateinit var sensorManager: SensorManager
@@ -88,46 +87,56 @@ class SensorService : Service(), SensorEventListener {
                     elevatorSum > stairSum * 2 -> {
                         val mapObj = MapDetailObject.level2Message[nowCountryNumber2]
 
-
-                        //通知
-                        (applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager).also {
-                            it.createNotificationChannel(
-                                NotificationChannel(
-                                    "id",
-                                    "${mapObj.country}が滅びました",
-                                    NotificationManager.IMPORTANCE_DEFAULT
+                        val sharedPref =
+                            applicationContext.getSharedPreferences("country", Context.MODE_PRIVATE)
+                        if (!sharedPref.getBoolean(mapObj.country, false)) {
+                            sharedPref.edit().putBoolean(mapObj.country, true).apply()
+                            //通知
+                            (applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager).also {
+                                it.createNotificationChannel(
+                                    NotificationChannel(
+                                        "id",
+                                        "${mapObj.country}が滅びました",
+                                        NotificationManager.IMPORTANCE_DEFAULT
+                                    )
                                 )
-                            )
-                            it.notify(
-                                mapObj.longitude.toInt(),
-                                NotificationCompat.Builder(applicationContext, "id").apply {
-                                    setSmallIcon(R.drawable.ki)
-                                    setContentTitle("${mapObj.country}が滅びました")
-                                    setAutoCancel(true)
-                                }.build()
-                            )
+                                it.notify(
+                                    mapObj.longitude.toInt(),
+                                    NotificationCompat.Builder(applicationContext, "id").apply {
+                                        setSmallIcon(R.drawable.ki)
+                                        setContentTitle("${mapObj.country}が滅びました")
+                                        setAutoCancel(true)
+                                    }.build()
+                                )
+                            }
                         }
                     }
                     elevatorSum > stairSum -> {
                         val mapObj = MapDetailObject.level1Message[nowCountryNumber1]
 
-                        //通知
-                        (applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager).also {
-                            it.createNotificationChannel(
-                                NotificationChannel(
-                                    "id",
-                                    "${mapObj.country}が滅びました",
-                                    NotificationManager.IMPORTANCE_DEFAULT
+                        val sharedPref =
+                            applicationContext.getSharedPreferences("country", Context.MODE_PRIVATE)
+                        if (!sharedPref.getBoolean(mapObj.country, false)) {
+                            sharedPref.edit().putBoolean(mapObj.country, true).apply()
+
+                            //通知
+                            (applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager).also {
+                                it.createNotificationChannel(
+                                    NotificationChannel(
+                                        "id",
+                                        "${mapObj.country}が滅びました",
+                                        NotificationManager.IMPORTANCE_DEFAULT
+                                    )
                                 )
-                            )
-                            it.notify(
-                                mapObj.longitude.toInt(),
-                                NotificationCompat.Builder(applicationContext, "id").apply {
-                                    setSmallIcon(R.drawable.ki)
-                                    setContentTitle("${mapObj.country}が滅びました")
-                                    setAutoCancel(true)
-                                }.build()
-                            )
+                                it.notify(
+                                    mapObj.longitude.toInt(),
+                                    NotificationCompat.Builder(applicationContext, "id").apply {
+                                        setSmallIcon(R.drawable.ki)
+                                        setContentTitle("${mapObj.country}が滅びました")
+                                        setAutoCancel(true)
+                                    }.build()
+                                )
+                            }
                         }
                     }
                     else -> {}
