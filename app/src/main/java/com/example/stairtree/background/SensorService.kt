@@ -19,10 +19,12 @@ import com.example.stairtree.db.daily.DailyDao
 import com.example.stairtree.db.daily.DailyEntity
 import com.example.stairtree.db.sensor.SensorDao
 import com.example.stairtree.db.sensor.SensorEntity
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.LocalTime
@@ -73,6 +75,20 @@ class SensorService : Service(), SensorEventListener {
             )
         }.build()
 
+        coroutineScope.launch {
+            delay(5000)
+            val notification2 = NotificationCompat.Builder(applicationContext, id).apply {
+                setContentTitle("センサー")
+                setContentText("計測中じゃないよ")
+                setSmallIcon(R.drawable.ic_launcher_foreground)
+                addAction(
+                    R.drawable.ic_launcher_foreground, "stop",
+                    stopPendingIntent
+                )
+            }.build()
+            startForeground(1, notification2)
+        }
+
         startForeground(1, notification)
         return START_STICKY
     }
@@ -81,7 +97,7 @@ class SensorService : Service(), SensorEventListener {
 
     }
 
-    private val upDownJadge = upAndDownJudgment(70)
+    private val upDownJadge = UpAndDownJudgment(70)
 
     inner class BetweenTime {
         private var time1: LocalTime? = null
@@ -173,6 +189,12 @@ class SensorService : Service(), SensorEventListener {
             )
 
             firebaseDb.collection("data").add(data)
+            val global = firebaseDb.collection("global")
+                .document("global")
+
+            global.update("stair", FieldValue.increment(stairUsage))
+            global.update("elevator", FieldValue.increment(elevatorUsage))
+
             coroutineScope.launch {
                 dailyDatabase.insert(
                     DailyEntity(
@@ -215,7 +237,7 @@ class SensorService : Service(), SensorEventListener {
         sensorDatabase = db.sensor()
         dailyDatabase = db.daily()
         sensorManager = getSystemService(SENSOR_SERVICE) as SensorManager
-        pressure = sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT)
+        pressure = sensorManager.getDefaultSensor(Sensor.TYPE_PRESSURE)
     }
 
     override fun onDestroy() {
