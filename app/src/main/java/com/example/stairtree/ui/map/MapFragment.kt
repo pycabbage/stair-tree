@@ -31,8 +31,6 @@ import com.google.maps.android.collections.MarkerManager
 import com.google.maps.android.collections.PolygonManager
 import com.google.maps.android.collections.PolylineManager
 import com.google.maps.android.data.geojson.GeoJsonLayer
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 
 
 class MapFragment : Fragment(), OnMapReadyCallback {
@@ -69,7 +67,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             val elevatorSum = it
                 .map { elevatorIt -> elevatorIt["elevator"].toString().toDouble() }
                 .reduce { acc, d -> acc + d }
-            val nowRatio = elevatorSum % stairSum  / elevatorSum
+            val nowRatio = elevatorSum % stairSum / elevatorSum
             var nowCountry = MapDetailObject.level1Message[0]
 
             binding.yabasa.apply {
@@ -99,6 +97,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                     binding.textView3.text = "地球温暖化レベル0"
                 }
             }
+
             Log.i("nowCountry", nowCountry.toString())
             moveMap(googleMap, nowCountry.latitude, nowCountry.longitude, 3F)
         }
@@ -125,7 +124,8 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             polylineManager,
             groundOverlayManager
         )
-
+        val PolygonStyle = layer.defaultPolygonStyle
+        PolygonStyle.fillColor = Color.argb(100, 255, 0, 0)
         layer.addLayerToMap()
         return layer
     }
@@ -144,7 +144,6 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         val groundOverlayManager = GroundOverlayManager(googleMap)
         val polygonManager = PolygonManager(googleMap)
         val polylineManager = PolylineManager(googleMap)
-
         MapDetailObject.level1Message.forEach { mapMemo ->
             val json = getCountryGeoJson(mapMemo.countryJson)
             fillCountry(
@@ -204,7 +203,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                 }
             }
         }
-        setTyphoon(googleMap)
+//        setTyphoon(googleMap)
     }
 
     private fun moveMap(map: GoogleMap, latitude: Double, longitude: Double, zoom: Float) {
