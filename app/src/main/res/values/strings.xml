@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">stair tree</string>
+    <string name="home">Home</string>
+    <string name="detail">Detail</string>
+    <string name="map">Map</string>
+    <string name="secondLabel">Usage Time[s]</string>
+    <string name="dayLabel">Date</string>
+    <string name="stairUsageTime">Stair usage time</string>
+    <string name="elevatorUsageTime">Elevator usage time</string>
+    <string name="globalWarmingLevel">Global Warming LEVEL</string>
 </resources>
