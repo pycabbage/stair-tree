@@ -1,5 +1,6 @@
 package com.example.stairtree.ui.map
 
+import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Intent
 import android.graphics.Color
@@ -59,6 +60,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         _binding = null
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onMapReady(googleMap: GoogleMap) {
         firebaseDb.collection("global").document("global").get().addOnSuccessListener {
             val stairSum = it["stair"].toString().toDouble()
@@ -78,19 +80,19 @@ class MapFragment : Fragment(), OnMapReadyCallback {
 
             when {
                 elevatorSum > stairSum * 2 -> {
-                    binding.textView3.text = "地球温暖化レベル2"
+                    binding.textView3.text = getText(R.string.globalWarmingLevel).toString() + "2"
                     nowCountryNumber = (nowRatio * MapDetailObject.level2size).toInt()
                     level2(googleMap)
                     nowCountry = MapDetailObject.level2Message[nowCountryNumber]
                 }
                 elevatorSum > stairSum -> {
-                    binding.textView3.text = "地球温暖化レベル1"
+                    binding.textView3.text = getText(R.string.globalWarmingLevel).toString() + "1"
                     nowCountryNumber = (nowRatio * MapDetailObject.level1size).toInt()
                     level1(googleMap)
                     nowCountry = MapDetailObject.level1Message[nowCountryNumber]
                 }
                 else -> {
-                    binding.textView3.text = "地球温暖化レベル0"
+                    binding.textView3.text = getText(R.string.globalWarmingLevel).toString() + "0"
                 }
             }
 
@@ -190,7 +192,8 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                     setNegativeButton("詳細") { _, _ ->
                         val intent = Intent(activity, MapDetailActivity::class.java)
                         intent.putExtra("title", mapMemo.country)
-                        startActivity(intent)
+                        val intentWeb = Intent(Intent.ACTION_VIEW, Uri.parse(mapMemo.articleURL))
+                        startActivity(intentWeb)
                     }
                     setPositiveButton("ok") { _, _ -> } // OK
                     create()
