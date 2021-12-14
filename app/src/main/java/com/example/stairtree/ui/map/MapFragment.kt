@@ -111,7 +111,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         polygonManager: PolygonManager,
         polylineManager: PolylineManager
     ): GeoJsonLayer {
-        val layer = GeoJsonLayer(
+        return GeoJsonLayer(
             map,
             country,
             context,
@@ -119,11 +119,10 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             polygonManager,
             polylineManager,
             groundOverlayManager
-        )
-        val PolygonStyle = layer.defaultPolygonStyle
-        PolygonStyle.fillColor = Color.argb(100, 255, 0, 0)
-        layer.addLayerToMap()
-        return layer
+        ).apply {
+            defaultPolygonStyle.fillColor = Color.argb(100, 255, 0, 0)
+            addLayerToMap()
+        }
     }
 
     private fun setTyphoon(map: GoogleMap) {

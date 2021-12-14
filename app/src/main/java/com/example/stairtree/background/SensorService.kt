@@ -19,12 +19,12 @@ import com.example.stairtree.db.daily.DailyDao
 import com.example.stairtree.db.daily.DailyEntity
 import com.example.stairtree.db.sensor.SensorDao
 import com.example.stairtree.db.sensor.SensorEntity
+import com.example.stairtree.ui.map.detail.MapDetailObject
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.LocalTime
@@ -68,26 +68,94 @@ class SensorService : Service(), SensorEventListener {
         val notification = NotificationCompat.Builder(this, id).apply {
             setContentTitle("センサー")
             setContentText("計測中")
-            setSmallIcon(R.drawable.ic_launcher_background)
+            setSmallIcon(R.drawable.ki)
             addAction(
-                R.drawable.ic_launcher_foreground, "stop",
+                R.drawable.ki, "stop",
                 stopPendingIntent
             )
         }.build()
 
-        coroutineScope.launch {
-            delay(5000)
-            val notification2 = NotificationCompat.Builder(applicationContext, id).apply {
-                setContentTitle("センサー")
-                setContentText("計測中じゃないよ")
-                setSmallIcon(R.drawable.ic_launcher_foreground)
-                addAction(
-                    R.drawable.ic_launcher_foreground, "stop",
-                    stopPendingIntent
-                )
-            }.build()
-            startForeground(1, notification2)
+        firebaseDb.collection("global").document("global").addSnapshotListener { value, error ->
+            if (error == null) {
+                val stairSum = value!!.data!!["stair"].toString().toDouble()
+                val elevatorSum = value.data!!["elevator"].toString().toDouble()
+                val nowRatio = elevatorSum % stairSum / elevatorSum
+                val nowCountryNumber1 = (nowRatio * MapDetailObject.level1size).toInt()
+                val nowCountryNumber2 = (nowRatio * MapDetailObject.level2size).toInt()
+
+                when {
+                    elevatorSum > stairSum * 2 -> {
+                        val mapObj = MapDetailObject.level2Message[nowCountryNumber2]
+
+                        val sharedPref =
+                            applicationContext.getSharedPreferences("country", Context.MODE_PRIVATE)
+                        if (!sharedPref.getBoolean(mapObj.country, false)) {
+                            sharedPref.edit().putBoolean(mapObj.country, true).apply()
+                            //通知
+                            (applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager).also {
+                                it.createNotificationChannel(
+                                    NotificationChannel(
+                                        "id",
+                                        "${mapObj.country}が滅びました",
+                                        NotificationManager.IMPORTANCE_DEFAULT
+                                    )
+                                )
+                                it.notify(
+                                    mapObj.longitude.toInt(),
+                                    NotificationCompat.Builder(applicationContext, "id").apply {
+                                        setSmallIcon(R.drawable.ki)
+                                        setContentTitle("${mapObj.country}が滅びました")
+                                        setAutoCancel(true)
+                                    }.build()
+                                )
+                            }
+                        }
+                    }
+                    elevatorSum > stairSum -> {
+                        val mapObj = MapDetailObject.level1Message[nowCountryNumber1]
+
+                        val sharedPref =
+                            applicationContext.getSharedPreferences("country", Context.MODE_PRIVATE)
+                        if (!sharedPref.getBoolean(mapObj.country, false)) {
+                            sharedPref.edit().putBoolean(mapObj.country, true).apply()
+
+                            //通知
+                            (applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager).also {
+                                it.createNotificationChannel(
+                                    NotificationChannel(
+                                        "id",
+                                        "${mapObj.country}が滅びました",
+                                        NotificationManager.IMPORTANCE_DEFAULT
+                                    )
+                                )
+                                it.notify(
+                                    mapObj.longitude.toInt(),
+                                    NotificationCompat.Builder(applicationContext, "id").apply {
+                                        setSmallIcon(R.drawable.ki)
+                                        setContentTitle("${mapObj.country}が滅びました")
+                                        setAutoCancel(true)
+                                    }.build()
+                                )
+                            }
+                        }
+                    }
+                    else -> {}
+                }
+            }
         }
+//        coroutineScope.launch {
+//            delay(5000)
+//            val notification2 = NotificationCompat.Builder(applicationContext, id).apply {
+//                setContentTitle("センサー")
+//                setContentText("計測中じゃないよ")
+//                setSmallIcon(R.drawable.ic_launcher_foreground)
+//                addAction(
+//                    R.drawable.ic_launcher_foreground, "stop",
+//                    stopPendingIntent
+//                )
+//            }.build()
+//            startForeground(1, notification2)
+//        }
 
         startForeground(1, notification)
         return START_STICKY
