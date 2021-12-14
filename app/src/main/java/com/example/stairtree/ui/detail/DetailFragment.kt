@@ -42,7 +42,7 @@ class DetailFragment : Fragment() {
         coroutineScope.launch {
             val date = Date()
             val calendar = Calendar.getInstance()
-            var month = mutableListOf<String>()
+            val month = mutableListOf<String>()
             calendar.time = date
             for (i in 0..listDays) {
                 month.add(
