@@ -31,6 +31,7 @@ class DetailFragment : Fragment() {
     private val coroutineScope = CoroutineScope(Dispatchers.Default)
     private lateinit var db: AppDatabase
     private lateinit var dailyDatabase: DailyDao
+    private val listDays = 7
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -38,91 +39,101 @@ class DetailFragment : Fragment() {
     ): View {
         _binding = FragmentDetailBinding.inflate(inflater, container, false)
         val lineChart = binding.chart
-        val toggle = binding.toggleButton
-        toggle.setOnCheckedChangeListener { _, isChecked ->
-            coroutineScope.launch {
-                val date = Date()
-                val calendar = Calendar.getInstance()
-                var month = mutableListOf<String>()
-                calendar.time = date
-                for (i in 0..30) {
-                    month.add(
-                        calendar.get(Calendar.YEAR)
-                            .toString() + "-" + (calendar.get(Calendar.MONTH) + 1).toString() + "-" + calendar.get(
-                            Calendar.DATE
-                        ).toString()
-                    )
-                    calendar.add(Calendar.DATE, -1)
-                }
-                month.reverse()
-
-                db = AppDatabase.create(requireContext())
-                dailyDatabase = db.daily()
-                val dbData: MutableMap<String, Double> = mutableMapOf()
-
-                dailyDatabase.selectAll().forEach {
-                    val data = if (isChecked) it.stair else it.elevator
-                    if (dbData.containsKey(it.date)) {
-                        dbData[it.date] = data + dbData[it.date]!!
-                    } else {
-                        dbData[it.date] = data
-                    }
-                }
-                val x: List<Float> = (0..30).toList().map { it.toFloat() }
-                val y = (0..30).toList().map {
-                    Log.i("month[it]", month[it])
-                    if (dbData.containsKey(month[it])) {
-                        dbData[month[it]]!!.toFloat()
-                    } else {
-                        0F
-                    }
-                }
-                val entryList: MutableList<Entry> = mutableListOf()  // 1本目の線
-                for (i in x.indices) {
-                    entryList.add(Entry(x[i], y[i]))
-                }
-
-                val xAxisFormatter = object : ValueFormatter() {
-
-                    override fun getAxisLabel(value: Float, axis: AxisBase?): String {
-                        Log.i("jfsdkljfl", value.toString())
-
-                        return month[value.toInt()].substring(5)
-                    }
-                }
-
-                val lineDataSets = mutableListOf<ILineDataSet>()
-
-                //②DataSetにデータ格納
-                val lineDataSet = LineDataSet(entryList, if (isChecked) "階段使用量" else "エレベーター使用量")
-
-                //③DataSetにフォーマット指定(3章で詳説)
-                lineDataSet.color = Color.CYAN
-                lineChart.legend.textColor = Color.CYAN
-
-                //リストに格納
-                lineDataSets.add(lineDataSet)
-                val lineData = LineData(lineDataSets)
-
-                //⑤LineChartにLineData格納
-                lineChart.data = lineData
-
-                //⑥Chartのフォーマット指定(3章で詳説)
-                //X軸の設定
-                lineChart.xAxis.apply {
-                    isEnabled = true
-                    textColor = Color.GRAY
-                    valueFormatter = xAxisFormatter
-                }
-
-                lineChart.axisLeft.apply { textColor = Color.GRAY }
-                lineChart.axisRight.apply { textColor = Color.GRAY }
-
-                //⑦lineChart更新
-                lineChart.invalidate()
+        coroutineScope.launch {
+            val date = Date()
+            val calendar = Calendar.getInstance()
+            var month = mutableListOf<String>()
+            calendar.time = date
+            for (i in 0..listDays) {
+                month.add(
+                    calendar.get(Calendar.YEAR)
+                        .toString() + "-" + (calendar.get(Calendar.MONTH) + 1).toString() + "-" + calendar.get(
+                        Calendar.DATE
+                    ).toString()
+                )
+                calendar.add(Calendar.DATE, -1)
             }
+            month.reverse()
+
+            db = AppDatabase.create(requireContext())
+            dailyDatabase = db.daily()
+            val stairDBData: MutableMap<String, Double> = mutableMapOf()
+            val elevatorDBData: MutableMap<String, Double> = mutableMapOf()
+
+            dailyDatabase.selectAll().forEach {
+                if (stairDBData.containsKey(it.date)) {
+                    stairDBData[it.date] = it.stair / 1000F + stairDBData[it.date]!!
+                    elevatorDBData[it.date] = it.elevator / 1000F + elevatorDBData[it.date]!!
+                } else {
+                    stairDBData[it.date] = it.stair / 1000F
+                    elevatorDBData[it.date] = it.elevator / 1000F
+                }
+            }
+
+            val x: List<Float> = (0..listDays).toList().map { it.toFloat() }
+            val stairY = (0..listDays).toList().map {
+                if (stairDBData.containsKey(month[it])) {
+                    stairDBData[month[it]]!!.toFloat()
+                } else {
+                    0F
+                }
+            }
+            val elevatorY = (0..listDays).toList().map {
+                if (elevatorDBData.containsKey(month[it])) {
+                    elevatorDBData[month[it]]!!.toFloat()
+                } else {
+                    0F
+                }
+            }
+
+            val stairEntryList: MutableList<Entry> = mutableListOf()  // 階段の線
+            val elevatorEntryList: MutableList<Entry> = mutableListOf()  // エレベータの線
+            for (i in x.indices) {
+                stairEntryList.add(Entry(x[i], stairY[i]))
+            }
+            for (i in x.indices) {
+                elevatorEntryList.add(Entry(x[i], elevatorY[i]))
+            }
+
+            val xAxisFormatter = object : ValueFormatter() {
+                override fun getAxisLabel(value: Float, axis: AxisBase?): String {
+                    return month[value.toInt()].substring(5)
+                }
+            }
+
+            val lineDataSets = mutableListOf<ILineDataSet>()
+
+            //②DataSetにデータ格納
+            val stairLineDataSet = LineDataSet(stairEntryList, "階段使用量")
+            val elevatorLineDataSet = LineDataSet(elevatorEntryList, "エレベーター使用量")
+
+            //③DataSetにフォーマット指定(3章で詳説)
+            stairLineDataSet.color = Color.CYAN
+            elevatorLineDataSet.color = Color.MAGENTA
+            lineChart.legend.textColor = Color.GRAY
+
+            //リストに格納
+            lineDataSets.add(stairLineDataSet)
+            lineDataSets.add(elevatorLineDataSet)
+            val lineData = LineData(lineDataSets)
+
+            //⑤LineChartにLineData格納
+            lineChart.data = lineData
+
+            //⑥Chartのフォーマット指定(3章で詳説)
+            //X軸の設定
+            lineChart.xAxis.apply {
+                isEnabled = true
+                textColor = Color.GRAY
+                valueFormatter = xAxisFormatter
+            }
+
+            lineChart.axisLeft.apply { textColor = Color.GRAY }
+            lineChart.axisRight.apply { textColor = Color.GRAY }
+
+            //⑦lineChart更新
+            lineChart.invalidate()
         }
-        toggle.toggle()
         return binding.root
     }
 
