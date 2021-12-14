@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import com.example.stairtree.R
 import com.example.stairtree.databinding.FragmentDetailBinding
 import com.example.stairtree.db.AppDatabase
 import com.example.stairtree.db.daily.DailyDao
@@ -104,8 +105,8 @@ class DetailFragment : Fragment() {
             val lineDataSets = mutableListOf<ILineDataSet>()
 
             //②DataSetにデータ格納
-            val stairLineDataSet = LineDataSet(stairEntryList, "階段使用量")
-            val elevatorLineDataSet = LineDataSet(elevatorEntryList, "エレベーター使用量")
+            val stairLineDataSet = LineDataSet(stairEntryList, getString(R.string.stairUsageTime))
+            val elevatorLineDataSet = LineDataSet(elevatorEntryList, getString(R.string.elevatorUsageTime))
 
             //③DataSetにフォーマット指定(3章で詳説)
             stairLineDataSet.color = Color.CYAN
