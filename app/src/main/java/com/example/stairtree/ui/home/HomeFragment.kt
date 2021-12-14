@@ -50,7 +50,7 @@ class HomeFragment : Fragment() {
             var elevatorSum = it["elevator"].toString().toDouble()
             stairSum /= 60000
             elevatorSum /= 60000
-            if (elevatorSum < stairSum) {
+            if (elevatorSum > stairSum) {
                 binding.worldusing.text = "世界木%,.2f本分の二酸化炭素排出...".format(stairSum - elevatorSum)
             } else {
                 binding.worldusing.text = "世界木%,.2f本分の二酸化炭素削減!".format(elevatorSum - stairSum)
