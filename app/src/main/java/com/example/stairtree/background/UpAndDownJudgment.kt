@@ -2,7 +2,7 @@ package com.example.stairtree.background
 
 import kotlin.math.pow
 
-class upAndDownJudgment(_regressionLength: Int) {
+class UpAndDownJudgment(_regressionLength: Int) {
     private val regressionLength = _regressionLength
     var data = DoubleArray(_regressionLength)
     var time = DoubleArray(_regressionLength)

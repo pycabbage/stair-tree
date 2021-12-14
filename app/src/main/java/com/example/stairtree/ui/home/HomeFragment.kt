@@ -1,24 +1,23 @@
 package com.example.stairtree.ui.home
 
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat.startForegroundService
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.example.stairtree.R
 import com.example.stairtree.background.SensorService
 import com.example.stairtree.databinding.FragmentHomeBinding
-import com.example.stairtree.db.AppDatabase
-import com.example.stairtree.db.daily.DailyDao
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
 
 class HomeFragment : Fragment() {
@@ -26,9 +25,6 @@ class HomeFragment : Fragment() {
     private val model by viewModels<HomeViewModel>()
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
-    private lateinit var db: AppDatabase
-    private lateinit var dailyDatabase: DailyDao
-    private val coroutineScope = CoroutineScope(Dispatchers.Default)
     private val firebaseDb = Firebase.firestore
 
     override fun onCreateView(
@@ -49,21 +45,15 @@ class HomeFragment : Fragment() {
 
         //binding.CO2.speed = 0.03 スピードを変更できる
 
-        coroutineScope.launch {
-            firebaseDb.collection("data").get().addOnSuccessListener {
-                var stairSum = 0.0
-                var elevatorSum = 0.0
-                for (element in it) {
-                    stairSum += element["stair"].toString().toDouble()
-                    elevatorSum += element["elevator"].toString().toDouble()
-                }
-                stairSum /= 60000
-                elevatorSum /= 60000
-                if (stairSum > elevatorSum) {
-                    binding.worldusing.text = "世界木%,.2f本分の二酸化炭素排出...".format(stairSum - elevatorSum)
-                } else {
-                    binding.worldusing.text = "世界木%,.2f本分の二酸化炭素削減!".format(elevatorSum - stairSum)
-                }
+        firebaseDb.collection("global").document("global").get().addOnSuccessListener {
+            var stairSum = it["stair"].toString().toDouble()
+            var elevatorSum = it["elevator"].toString().toDouble()
+            stairSum /= 60000
+            elevatorSum /= 60000
+            if (elevatorSum < stairSum) {
+                binding.worldusing.text = "世界木%,.2f本分の二酸化炭素排出...".format(stairSum - elevatorSum)
+            } else {
+                binding.worldusing.text = "世界木%,.2f本分の二酸化炭素削減!".format(elevatorSum - stairSum)
             }
         }
 
@@ -78,6 +68,22 @@ class HomeFragment : Fragment() {
                 binding.treeimage.setImageResource(R.drawable.ki)
             }
         }
+
+//        (context?.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager).also {
+//            it.createNotificationChannel(
+//                NotificationChannel(
+//                    "id",
+//                    "title",
+//                    NotificationManager.IMPORTANCE_DEFAULT
+//                )
+//            )
+//            it.notify(10, NotificationCompat.Builder(context!!, "id").apply {
+//                setSmallIcon(R.drawable.ki)
+//                setContentTitle("title")
+//                setContentText("message")
+//                setAutoCancel(true)
+//            }.build())
+//        }
 
         return binding.root
     }
