@@ -60,13 +60,9 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
-        firebaseDb.collection("data").get().addOnSuccessListener {
-            val stairSum = it
-                .map { stairIt -> stairIt["stair"].toString().toDouble() }
-                .reduce { acc, d -> acc + d }
-            val elevatorSum = it
-                .map { elevatorIt -> elevatorIt["elevator"].toString().toDouble() }
-                .reduce { acc, d -> acc + d }
+        firebaseDb.collection("global").document("global").get().addOnSuccessListener {
+            val stairSum = it["stair"].toString().toDouble()
+            val elevatorSum = it["elevator"].toString().toDouble()
             val nowRatio = elevatorSum % stairSum / elevatorSum
             var nowCountry = MapDetailObject.level1Message[0]
 
