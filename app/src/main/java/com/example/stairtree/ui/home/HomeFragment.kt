@@ -1,15 +1,11 @@
 package com.example.stairtree.ui.home
 
-import android.app.NotificationChannel
-import android.app.NotificationManager
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat.startForegroundService
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -51,9 +47,9 @@ class HomeFragment : Fragment() {
             stairSum /= 60000
             elevatorSum /= 60000
             if (elevatorSum > stairSum) {
-                binding.worldusing.text = "世界木%,.2f本分の二酸化炭素排出...".format(stairSum - elevatorSum)
+                binding.worldusing.text = "世界木%,.2f本分の二酸化炭素排出...".format(elevatorSum - stairSum)
             } else {
-                binding.worldusing.text = "世界木%,.2f本分の二酸化炭素削減!".format(elevatorSum - stairSum)
+                binding.worldusing.text = "世界木%,.2f本分の二酸化炭素削減!".format(stairSum - elevatorSum)
             }
         }
 
