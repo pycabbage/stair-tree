@@ -17,10 +17,7 @@ import com.example.stairtree.R
 import com.example.stairtree.databinding.FragmentMapBinding
 import com.example.stairtree.ui.map.detail.MapDetailActivity
 import com.example.stairtree.ui.map.detail.MapDetailObject
-import com.google.android.gms.maps.CameraUpdateFactory
-import com.google.android.gms.maps.GoogleMap
-import com.google.android.gms.maps.OnMapReadyCallback
-import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.GroundOverlayOptions
 import com.google.android.gms.maps.model.LatLng
@@ -45,14 +42,19 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentMapBinding.inflate(inflater, container, false)
+        MapsInitializer.initialize(requireActivity())
+        val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
+        mapFragment.onCreate(savedInstanceState)
+        mapFragment.getMapAsync(this@MapFragment)
         return binding.root
     }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
-        mapFragment.getMapAsync(this)
-    }
+//
+//    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+//        super.onViewCreated(view, savedInstanceState)
+//        val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
+//        mapFragment.getMapAsync(this@MapFragment)
+//        mapFragment.onCreate(savedInstanceState)
+//    }
 
     override fun onDestroyView() {
         super.onDestroyView()
@@ -148,7 +150,10 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                 groundOverlayManager,
                 polygonManager,
                 polylineManager
-            ).setOnFeatureClickListener {
+            ).also {
+                it.defaultPolygonStyle.fillColor = Color.RED
+                it.defaultPointStyle.setPolygonFillColor(Color.RED)
+            }.setOnFeatureClickListener {
                 AlertDialog.Builder(requireContext()).apply {
                     setTitle(mapMemo.title)
                     setMessage(mapMemo.message)
