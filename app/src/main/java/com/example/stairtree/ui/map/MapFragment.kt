@@ -1,5 +1,6 @@
 package com.example.stairtree.ui.map
 
+import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Intent
 import android.graphics.Color
@@ -61,37 +62,64 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         _binding = null
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onMapReady(googleMap: GoogleMap) {
         firebaseDb.collection("global").document("global").get().addOnSuccessListener {
             val stairSum = it["stair"].toString().toDouble()
             val elevatorSum = it["elevator"].toString().toDouble()
-            val nowRatio = elevatorSum % stairSum / elevatorSum
             var nowCountry = MapDetailObject.level1Message[0]
 
-            binding.yabasa.apply {
-                max = 100
-                min = 0
-                progress = (nowRatio * 100).toInt()
-                progressDrawable.colorFilter = PorterDuffColorFilter(
-                    Color.RED,
-                    PorterDuff.Mode.SRC_IN
-                )
-            }
 
             when {
                 elevatorSum > stairSum * 2 -> {
                     binding.textView3.text = "地球温暖化レベル2"
+                    var nowRatio = (elevatorSum -stairSum*2 )/ stairSum
+                    if(nowRatio>=1)nowRatio = 0.999
+
+                    binding.yabasa.apply {
+                        max = 100
+                        min = 0
+                        progress = (nowRatio * 100).toInt()
+                        progressDrawable.colorFilter = PorterDuffColorFilter(
+                            Color.RED,
+                            PorterDuff.Mode.SRC_IN
+                        )
+                    }
                     nowCountryNumber = (nowRatio * MapDetailObject.level2size).toInt()
                     level2(googleMap)
                     nowCountry = MapDetailObject.level2Message[nowCountryNumber]
                 }
                 elevatorSum > stairSum -> {
+                    var nowRatio = (elevatorSum -stairSum )/ stairSum
+                    if(nowRatio>=1)nowRatio = 0.999
+
+                    binding.yabasa.apply {
+                        max = 100
+                        min = 0
+                        progress = (nowRatio * 100).toInt()
+                        progressDrawable.colorFilter = PorterDuffColorFilter(
+                            Color.RED,
+                            PorterDuff.Mode.SRC_IN
+                        )
+                    }
                     binding.textView3.text = "地球温暖化レベル1"
                     nowCountryNumber = (nowRatio * MapDetailObject.level1size).toInt()
                     level1(googleMap)
                     nowCountry = MapDetailObject.level1Message[nowCountryNumber]
                 }
                 else -> {
+                    var nowRatio = elevatorSum  / stairSum
+                    if(nowRatio>=1)nowRatio = 0.999
+
+                    binding.yabasa.apply {
+                        max = 100
+                        min = 0
+                        progress = (nowRatio * 100).toInt()
+                        progressDrawable.colorFilter = PorterDuffColorFilter(
+                            Color.RED,
+                            PorterDuff.Mode.SRC_IN
+                        )
+                    }
                     binding.textView3.text = "地球温暖化レベル0"
                 }
             }
@@ -141,7 +169,9 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         val groundOverlayManager = GroundOverlayManager(googleMap)
         val polygonManager = PolygonManager(googleMap)
         val polylineManager = PolylineManager(googleMap)
-        MapDetailObject.level1Message.forEach { mapMemo ->
+        for (i in 0..nowCountryNumber) {
+            val mapMemo = MapDetailObject.level1Message[i]
+
             val json = getCountryGeoJson(mapMemo.countryJson)
             fillCountry(
                 googleMap,
@@ -179,7 +209,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         val polygonManager = PolygonManager(googleMap)
         val polylineManager = PolylineManager(googleMap)
 
-        MapDetailObject.level2Message.forEach { mapMemo ->
+        MapDetailObject.level1Message.forEach { mapMemo ->
             val json = getCountryGeoJson(mapMemo.countryJson)
             fillCountry(
                 googleMap,
@@ -195,11 +225,40 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                     setNegativeButton("詳細") { _, _ ->
                         val intent = Intent(activity, MapDetailActivity::class.java)
                         intent.putExtra("title", mapMemo.country)
-                        startActivity(intent)
+                        val intentWeb = Intent(Intent.ACTION_VIEW, Uri.parse(mapMemo.articleURL))
+                        startActivity(intentWeb)
                     }
                     setPositiveButton("ok") { _, _ -> } // OK
                     create()
                     show() // AlertDialogを表示
+                }
+            }
+        }
+        for (i in 0..nowCountryNumber) {
+            val mapMemo = MapDetailObject.level2Message[i]
+
+            val json = getCountryGeoJson(mapMemo.countryJson)
+            fillCountry(
+                googleMap,
+                json,
+                markerManager,
+                groundOverlayManager,
+                polygonManager,
+                polylineManager
+            ).setOnFeatureClickListener {
+                AlertDialog.Builder(requireContext()).apply {
+                    setTitle(mapMemo.title)
+                    setMessage(mapMemo.message)
+                    setNegativeButton("詳細") { _, _ ->
+                        val intent = Intent(activity, MapDetailActivity::class.java)
+                        intent.putExtra("title", mapMemo.country)
+                        intent.putExtra("message", mapMemo.message)
+                        val intentWeb = Intent(Intent.ACTION_VIEW, Uri.parse(mapMemo.articleURL))
+                        startActivity(intentWeb)
+                    }
+                    setPositiveButton("ok") { _, _ -> } // OK
+                    create()
+                    show()  // AlertDialogを表示
                 }
             }
         }
