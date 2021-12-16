@@ -12,6 +12,7 @@ import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import android.os.IBinder
 import android.util.Log
+import android.widget.Toast
 import androidx.core.app.NotificationCompat
 import com.example.stairtree.R
 import com.example.stairtree.db.AppDatabase
@@ -247,8 +248,20 @@ class SensorService : Service(), SensorEventListener {
                 Log.i("elevater", "Yes")
                 isEle = isele.jadge()
                 elevatorUsage = bet.toDouble()
+                val text = "エレベーターの利用を検知しました"
+                val duration = Toast.LENGTH_SHORT
+
+                val toast = Toast.makeText(applicationContext, text, duration)
+                toast.show()
+
             } else {
                 stairUsage = bet.toDouble()
+                val text = "階段の利用を検知しました"
+                val duration = Toast.LENGTH_SHORT
+
+                val toast = Toast.makeText(applicationContext, text, duration)
+                toast.show()
+
             }
             val data = hashMapOf(
                 "date" to LocalDate.now().toString(),
