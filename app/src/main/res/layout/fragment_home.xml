@@ -45,7 +45,7 @@
             android:id="@+id/guideline" />
 
     <TextView
-            android:text="木0本分のCO2排出"
+            android:text="個人:木0本分のCO2排出"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/usage"
@@ -57,7 +57,7 @@
             android:textSize="24sp" />
 
     <TextView
-            android:text="世界木0.00本文のCO2排出"
+            android:text="世界:木0.00本分のCO2排出"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/worldusing"
