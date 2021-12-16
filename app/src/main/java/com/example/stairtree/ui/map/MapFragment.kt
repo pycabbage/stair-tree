@@ -17,6 +17,7 @@ import androidx.fragment.app.viewModels
 import com.example.stairtree.R
 import com.example.stairtree.databinding.FragmentMapBinding
 import com.example.stairtree.ui.map.detail.MapDetailActivity
+import com.example.stairtree.ui.map.detail.MapDetailEntity
 import com.example.stairtree.ui.map.detail.MapDetailObject
 import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
@@ -120,9 +121,9 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                     binding.textView3.text = "地球温暖化レベル0"
                 }
             }
-
+            
             Log.i("nowCountry", nowCountry.toString())
-            moveMap(googleMap, nowCountry.latitude, nowCountry.longitude, 3F)
+            moveMap(googleMap, nowCountry.latitude, nowCountry.longitude, nowCountry.zoom)
         }
     }
 
