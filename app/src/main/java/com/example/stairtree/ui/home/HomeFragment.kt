@@ -47,9 +47,9 @@ class HomeFragment : Fragment() {
             stairSum /= 60000
             elevatorSum /= 60000
             if (elevatorSum > stairSum) {
-                binding.worldusing.text = "世界木%,.2f本分の二酸化炭素排出...".format(elevatorSum - stairSum)
+                binding.worldusing.text = "世界:木%,.2f本分の二酸化炭素排出...".format(elevatorSum - stairSum)
             } else {
-                binding.worldusing.text = "世界木%,.2f本分の二酸化炭素削減!".format(stairSum - elevatorSum)
+                binding.worldusing.text = "世界:木%,.2f本分の二酸化炭素削減!".format(stairSum - elevatorSum)
             }
         }
 
