@@ -11,15 +11,15 @@ object MapDetailObject {
             latitude = -95.7128,
             longitude = 37.0902
         ),
-        MapDetailEntity(
-            country = "ツバル",
-            title = "ツバル",
-            message = "",
-            countryJson = "tuv",
-            articleURL = "https://www3.nhk.or.jp/news/html/20211110/k10013341181000.html",
-            latitude = -8.516667,
-            longitude = 179.216667
-        ),
+//        MapDetailEntity(
+//            country = "ツバル",
+//            title = "ツバル",
+//            message = "",
+//            countryJson = "tuv",
+//            articleURL = "https://www3.nhk.or.jp/news/html/20211110/k10013341181000.html",
+//            latitude = -8.516667,
+//            longitude = 179.216667
+//        ),
         MapDetailEntity(
             country = "バングラデシュ",
             title = "バングラデシュ",
