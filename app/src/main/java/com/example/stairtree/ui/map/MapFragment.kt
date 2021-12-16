@@ -43,9 +43,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentMapBinding.inflate(inflater, container, false)
-        MapsInitializer.initialize(requireActivity())
         val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
-        mapFragment.onCreate(savedInstanceState)
         mapFragment.getMapAsync(this@MapFragment)
         return binding.root
     }
@@ -69,12 +67,11 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             val elevatorSum = it["elevator"].toString().toDouble()
             var nowCountry = MapDetailObject.level1Message[0]
 
-
             when {
                 elevatorSum > stairSum * 2 -> {
                     binding.textView3.text = "地球温暖化レベル2"
-                    var nowRatio = (elevatorSum -stairSum*2 )/ stairSum
-                    if(nowRatio>=1)nowRatio = 0.999
+                    var nowRatio = (elevatorSum - stairSum * 2) / stairSum
+                    if (nowRatio >= 1) nowRatio = 0.999
 
                     binding.yabasa.apply {
                         max = 100
@@ -90,8 +87,8 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                     nowCountry = MapDetailObject.level2Message[nowCountryNumber]
                 }
                 elevatorSum > stairSum -> {
-                    var nowRatio = (elevatorSum -stairSum )/ stairSum
-                    if(nowRatio>=1)nowRatio = 0.999
+                    var nowRatio = (elevatorSum - stairSum) / stairSum
+                    if (nowRatio >= 1) nowRatio = 0.999
 
                     binding.yabasa.apply {
                         max = 100
@@ -108,8 +105,8 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                     nowCountry = MapDetailObject.level1Message[nowCountryNumber]
                 }
                 else -> {
-                    var nowRatio = elevatorSum  / stairSum
-                    if(nowRatio>=1)nowRatio = 0.999
+                    var nowRatio = elevatorSum / stairSum
+                    if (nowRatio >= 1) nowRatio = 0.999
 
                     binding.yabasa.apply {
                         max = 100
@@ -151,6 +148,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             groundOverlayManager
         ).apply {
             defaultPolygonStyle.fillColor = Color.argb(100, 255, 0, 0)
+            defaultPolygonStyle.strokeWidth = 5f
             addLayerToMap()
         }
     }
