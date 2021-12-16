@@ -42,13 +42,13 @@ class HomeFragment : Fragment() {
         model.selectSum.observe(viewLifecycleOwner) {
             binding.usage.text = when {
                 it.elevator > it.stair * 1000 -> {
-                    binding.treeimage.setImageResource(R.drawable.kareta_ki2)
+                    binding.treeimage.setImageResource(R.drawable.kareta_ki)
                     binding.CO2.number = 2
                     "個人:木%,.2f本分の二酸化炭素排出...".format(it.elevator - it.stair)
                 }
                 it.elevator > it.stair -> {
                     //binding.treeimage.setImageResource(R.drawable.sukoshi_kareta_ki)
-                    binding.treeimage.setImageResource(R.drawable.kareta_ki2)
+                    binding.treeimage.setImageResource(R.drawable.kareta_ki)
                     binding.CO2.number = 1
                     "個人:木%,.2f本分の二酸化炭素排出...".format(it.elevator - it.stair)
                 }
