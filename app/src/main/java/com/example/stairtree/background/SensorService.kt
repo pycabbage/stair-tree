@@ -35,7 +35,6 @@ import kotlin.math.abs
 class SensorService : Service(), SensorEventListener {
     private lateinit var sensorManager: SensorManager
     private var pressure: Sensor? = null
-    private var step: Sensor? = null
     private lateinit var db: AppDatabase
     private lateinit var sensorDatabase: SensorDao
     private lateinit var dailyDatabase: DailyDao
@@ -46,6 +45,8 @@ class SensorService : Service(), SensorEventListener {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        sensorManager.registerListener(this, pressure, SensorManager.SENSOR_DELAY_NORMAL)
+
         val manager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         val id = "sensor foreground"
         val name = "sensor setting"
@@ -219,7 +220,6 @@ class SensorService : Service(), SensorEventListener {
     override fun onSensorChanged(event: SensorEvent) {
 //        val millibarsOfPressure = event.values[0] / 100000 + 1000 //これはエミュレーターで動かすときにいろいろやってたやつ
         val millibarsOfPressure = event.values[0]
-        Log.i("aaaaa", event.sensor.name)
         val time = LocalTime.now()
         upDownJadge.push(millibarsOfPressure.toDouble())
         val slope = if (upDownJadge.possibleToJudge()) {
@@ -319,9 +319,6 @@ class SensorService : Service(), SensorEventListener {
         dailyDatabase = db.daily()
         sensorManager = getSystemService(SENSOR_SERVICE) as SensorManager
         pressure = sensorManager.getDefaultSensor(Sensor.TYPE_PRESSURE)
-        sensorManager.registerListener(this, pressure, SensorManager.SENSOR_DELAY_NORMAL)
-        step = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_DETECTOR)
-        sensorManager.registerListener(this, step, SensorManager.SENSOR_DELAY_NORMAL)
     }
 
     override fun onDestroy() {
