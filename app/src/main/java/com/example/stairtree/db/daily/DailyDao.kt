@@ -1,6 +1,5 @@
 package com.example.stairtree.db.daily
 
-import androidx.lifecycle.LiveData
 import androidx.room.*
 import kotlinx.coroutines.flow.Flow
 
@@ -28,5 +27,5 @@ interface DailyDao {
     fun selectElevatorSum(): Double
 
     @Query("select sum(stair) as stair,sum(elevator) as elevator from daily")
-    fun selectSum(): LiveData<DataTuple>
+    fun selectSum(): Flow<DataTuple>
 }
