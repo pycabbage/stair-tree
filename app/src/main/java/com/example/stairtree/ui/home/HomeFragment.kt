@@ -54,8 +54,8 @@ class HomeFragment : Fragment() {
         }
 
         model.selectElevatorSum2.observe(viewLifecycleOwner) {
-            val co2Emission = it.stair / 60000
-            val co2Reduction = it.elevator / 60000
+            val co2Emission = it.elevator / 60000
+            val co2Reduction = it.stair / 60000
             if (co2Emission > co2Reduction) {
                 binding.usage.text = "個人:木%,.2f本分の二酸化炭素排出...".format(co2Emission - co2Reduction)
                 binding.treeimage.setImageResource(R.drawable.kareta_ki)
