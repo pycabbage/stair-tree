@@ -6,6 +6,7 @@ data class MapDetailEntity(
     val message: String,
     val countryJson: String,
     val articleURL: String,
-    val latitude:Double,
-    val longitude:Double
+    val latitude: Double,
+    val longitude: Double,
+    val zoom: Float,
 )

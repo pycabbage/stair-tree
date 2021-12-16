@@ -8,8 +8,9 @@ object MapDetailObject {
             message = "アメリカのフロリダ半島に巨大な台風が上陸、その後ルイジアナ州に再上陸し、大きな被害をもたらしました。",
             countryJson = "usa",
             articleURL = "https://news.yahoo.co.jp/byline/iizukamakiko/20191013-00146620",
-            latitude = -95.7128,
-            longitude = 37.0902
+            latitude = 37.0902,
+            longitude = -100.7128,
+            zoom = 3f,
         ),
         MapDetailEntity(
             country = "ツバル",
@@ -18,7 +19,8 @@ object MapDetailObject {
             countryJson = "tuv",
             articleURL = "https://news.yahoo.co.jp/articles/d2855b6cc325c8cf03bca4ef0b308968e65a5b42",
             latitude = -8.516667,
-            longitude = 179.216667
+            longitude = 179.216667,
+            zoom = 8f,
         ),
         MapDetailEntity(
             country = "バングラデシュ",
@@ -28,6 +30,7 @@ object MapDetailObject {
             articleURL = "https://news.yahoo.co.jp/byline/morisayaka/20210526-00239929",
             latitude = 22.7,
             longitude = 90.35,
+            zoom = 5f,
         )
     )
     val level1size = level1Message.size
@@ -39,7 +42,8 @@ object MapDetailObject {
             countryJson = "grl",
             articleURL = "https://news.yahoo.co.jp/byline/morisayaka/20190807-00136984",
             latitude = 71.7069,
-            longitude = -42.6043
+            longitude = -42.6043,
+            zoom = 3f,
         ),
         MapDetailEntity(
             country = "日本",
@@ -47,8 +51,9 @@ object MapDetailObject {
             message = "100年後の日本では、風速が70[m/s]近くある「スーパー台風」の上陸数が現在の4倍に増えます。",
             countryJson = "jpn",
             articleURL = "https://news.yahoo.co.jp/articles/8b7a81cc957871b8045082d446e266e470d937a1",
-            latitude = 24.0,
-            longitude = 153.0
+            latitude = 33.0,
+            longitude = 138.0,
+            zoom = 4f,
         )
     )
     val level2size = level2Message.size
