@@ -60,7 +60,7 @@ class HomeFragment : Fragment() {
                 binding.usage.text = "個人:木%,.2f本分の二酸化炭素排出...".format(co2Emission - co2Reduction)
                 binding.treeimage.setImageResource(R.drawable.kareta_ki)
             } else {
-                binding.usage.text = "個人：木%,.2f本分の二酸化炭素削減!".format(co2Reduction - co2Emission)
+                binding.usage.text = "個人:木%,.2f本分の二酸化炭素削減!".format(co2Reduction - co2Emission)
                 binding.treeimage.setImageResource(R.drawable.ki)
             }
         }
