@@ -1,10 +1,7 @@
 package com.example.stairtree.ui.home
 
 import android.content.Context
-import android.graphics.BitmapFactory
-import android.graphics.Canvas
-import android.graphics.Paint
-import android.graphics.Rect
+import android.graphics.*
 import android.util.AttributeSet
 import android.view.View
 import com.example.stairtree.R
@@ -23,8 +20,11 @@ class CO2 @JvmOverloads constructor(
     private var speed = 0.025
     private var count = 0.0
     private val co2Image = BitmapFactory.decodeResource(resources, R.drawable.co2)
-    private val paint = Paint()
+    private val paint = Paint().apply {
+        color = Color.WHITE
+    }
     private val co2 = mutableListOf<CO2Movement>()
+
     override fun draw(canvas: Canvas?) {
         super.draw(canvas)
 
@@ -42,6 +42,9 @@ class CO2 @JvmOverloads constructor(
             val rect = it.setRect(width, height, count, size)
             canvas?.drawBitmap(co2Image, null, rect, paint)
         }
+
+        val rect = Rect(0, height - 1, width, height)
+        canvas?.drawRect(rect, paint)
 
         count += speed
         invalidate()
