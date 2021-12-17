@@ -5,9 +5,9 @@ object MapDetailObject {
         MapDetailEntity(
             country = "アメリカ",
             title = "アメリカで発生した地球温暖化の事例",
-            message = "地球温暖化の影響により、アメリカに上陸する台風の速度が低下し、被害が増加します。",
+            message = "アメリカでは死者３６人,９州で６１の竜巻の竜巻が発生しました。これらは地球温暖化ガ原因だと考えられています。",
             countryJson = "usa",
-            articleURL = "https://news.yahoo.co.jp/articles/11c88a61bd1befde464bcaedac41af8cbdce56f8",
+            articleURL = "https://news.yahoo.co.jp/articles/48f640a21bb58a32f341f0f1e0271356402df3d3",
             latitude = 37.0902,
             longitude = -100.7128,
             zoom = 3f,
@@ -23,14 +23,14 @@ object MapDetailObject {
             zoom = 8f,
         ),
         MapDetailEntity(
-            country = "バングラデシュ",
-            title = "バングラデシュ",
-            message = "地球温暖化によるサイクロンにより、多くの死者が出ています。",
-            countryJson = "bgd",
-            articleURL = "https://news.yahoo.co.jp/byline/morisayaka/20210526-00239929",
-            latitude = 22.7,
-            longitude = 90.35,
-            zoom = 5f,
+            country = "インド",
+            title = "インド",
+            message = "地球温暖化による大雨の被害で、多数の死者が出ています。",
+            countryJson = "ind",
+            articleURL = "https://news.yahoo.co.jp/articles/0d5f4a6ff501f17b0118ca98d9f64ac174c6a0b0",
+            latitude = 20.5936,
+            longitude = 78.9628,
+            zoom = 4f,
         )
     )
     val level1size = level1Message.size
@@ -38,9 +38,9 @@ object MapDetailObject {
         MapDetailEntity(
             country = "グリーンランド",
             title = "グリーンランドについて",
-            message = "グリーンランドは、2100年までに海面が60cm上昇するといわれています。",
+            message = "グリーンランドは、2100年までに海面が10～18cm上昇するといわれています。",
             countryJson = "grl",
-            articleURL = "https://news.yahoo.co.jp/byline/morisayaka/20190807-00136984",
+            articleURL = "https://news.yahoo.co.jp/articles/9e465cc3ae712e3e542a623392ca57b6730116c6",
             latitude = 71.7069,
             longitude = -42.6043,
             zoom = 3f,
