@@ -5,9 +5,9 @@ object MapDetailObject {
         MapDetailEntity(
             country = "アメリカ",
             title = "アメリカで発生した地球温暖化の事例",
-            message = "アメリカのフロリダ半島に巨大な台風が上陸、その後ルイジアナ州に再上陸し、大きな被害をもたらしました。",
+            message = "地球温暖化の影響により、アメリカに上陸する台風の速度が低下し、被害が増加します。",
             countryJson = "usa",
-            articleURL = "https://news.yahoo.co.jp/byline/iizukamakiko/20191013-00146620",
+            articleURL = "https://news.yahoo.co.jp/articles/11c88a61bd1befde464bcaedac41af8cbdce56f8",
             latitude = 37.0902,
             longitude = -100.7128,
             zoom = 3f,
