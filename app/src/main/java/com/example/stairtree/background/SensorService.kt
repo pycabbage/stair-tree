@@ -80,12 +80,15 @@ class SensorService : Service(), SensorEventListener {
             if (error == null) {
                 val stairSum = value!!.data!!["stair"].toString().toDouble()
                 val elevatorSum = value.data!!["elevator"].toString().toDouble()
-                val nowRatio = elevatorSum % stairSum / elevatorSum
-                val nowCountryNumber1 = (nowRatio * MapDetailObject.level1size).toInt()
-                val nowCountryNumber2 = (nowRatio * MapDetailObject.level2size).toInt()
+//                val nowRatio = elevatorSum % stairSum / elevatorSum
+//                val nowCountryNumber1 = (nowRatio * MapDetailObject.level1size).toInt()
+//                val nowCountryNumber2 = (nowRatio * MapDetailObject.level2size).toInt()
 
                 when {
                     elevatorSum > stairSum * 2 -> {
+                        var nowRatio = (elevatorSum - stairSum * 2) / stairSum
+                        if (nowRatio >= 1) nowRatio = 0.999
+                        val nowCountryNumber2 = (nowRatio * MapDetailObject.level2size).toInt()
                         val mapObj = MapDetailObject.level2Message[nowCountryNumber2]
 
                         val sharedPref =
@@ -113,6 +116,9 @@ class SensorService : Service(), SensorEventListener {
                         }
                     }
                     elevatorSum > stairSum -> {
+                        var nowRatio = (elevatorSum - stairSum) / stairSum
+                        if (nowRatio >= 1) nowRatio = 0.999
+                        val nowCountryNumber1 = (nowRatio * MapDetailObject.level1size).toInt()
                         val mapObj = MapDetailObject.level1Message[nowCountryNumber1]
 
                         val sharedPref =
