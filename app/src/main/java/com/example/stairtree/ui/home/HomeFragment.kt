@@ -47,7 +47,7 @@ class HomeFragment : Fragment() {
                     "個人:木%,.2f本分の二酸化炭素排出...".format(it.elevator - it.stair)
                 }
                 it.elevator > it.stair -> {
-                    binding.CO2.number = 20
+                    binding.CO2.number =2 +  ((it.elevator - it.stair)*3).toInt()
                     binding.CO2.size = 60
                     "個人:木%,.2f本分の二酸化炭素排出...".format(it.elevator - it.stair)
                 }
